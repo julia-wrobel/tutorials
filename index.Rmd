@@ -1,0 +1,14 @@
+---
+title: "Tutorials"
+---
+
+Below are links to tutorials that I recently developed and delivered.
+
+* [Using the OSX terminal](osx_terminal.html): 
+    * delivered 11/13/2017 for [Columbia biostatistics computing club](https://columbia-computing-club.github.io/)
+
+* [`flexdashboard` with Shiny](http://jeffgoldsmith.com/DSI/shiny.html)
+    * 11/06/2017 for {Jeff Goldsmith's](http://jeffgoldsmith.com/) Data Science I class
+    
+* [Interactive visualization using R Studio's Shiny](https://columbia-computing-club.github.io/resources/): 
+    * 3/23/2017 for [Columbia biostatistics computing club](https://columbia-computing-club.github.io/)
