@@ -9,5 +9,10 @@ navbar:
       href: mailto:<jw3134@cumc.columbia.edu>
     - icon: fa-github fa-lg
       href: http://github.com/julia-wrobel/
+    - icon: fa-twitter 
+      href: https://twitter.com/jwrobel1
+
 output:
-  html_document
+  html_document:
+    theme: lumen
+    css: styles.css
