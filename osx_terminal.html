@@ -313,19 +313,28 @@ div.tocify {
 </div>
 
 
-<p>This tutorial gives an introduction to using the Unix command line. I provide background slides here as well some basic commands, but the bulk of the coding will be done live. We’ll be recording the tutorial as we go and that video will be posted as well.</p>
+<p>This tutorial provides an introduction to the Unix command line. I provide background slides here as well some basic commands, but the bulk of the coding will be done live. We’ll be recording the tutorial as we go and that video will be posted as well (save technical difficulties).</p>
 <div id="what-is-the-osx-terminal" class="section level2">
 <h2>What is the OSX terminal?</h2>
-<p>The <strong>OSX terminal</strong> provides an command line interface to Mac operating system (OS). This allows you to * customize your workspace * work faster and more efficiently: no mouse or touchpad! * better debug when you break stuff</p>
+<p>The <strong>OSX terminal</strong> provides an command line interface to Mac operating system (OS). This allows you to</p>
+<ul>
+<li>customize your workspace</li>
+<li>work faster and more efficiently: no mouse or touchpad!</li>
+<li>better debug when you break stuff</li>
+</ul>
 <p>This tutorial will teach you how to get started with the <strong>Unix</strong> command line, which encompasses <em>Linux</em> systems <em>Android</em>, <em>iOS</em>, and <em>macOS</em>.</p>
-<p>I named this tutorial “Using the OSX terminal” but really what we learn hear will allow you to interact with any OS within the family Unix operating systems.</p>
+<p>I called this tutorial “Using the OSX terminal” but what we learn here will allow you to interact with any OS within the family Unix operating systems.</p>
 </div>
 <div id="getting-started" class="section level2">
 <h2>Getting started</h2>
-<p>There are two ways to open the OSX terminal. * open <code>terminal</code> with Searchlight * open Applications &gt; Utilities &gt; Terminal</p>
+<p>There are two ways to open the OSX terminal.</p>
+<ol style="list-style-type: decimal">
+<li>Open <code>terminal</code> with Searchlight using <code>Cmd-space</code></li>
+<li>Open Applications &gt; Utilities &gt; Terminal</li>
+</ol>
 <p>You open terminal will look something like this:</p>
 <p><img src="images/terminal_open.png" style="width:75%"></p>
-<p>You’ll see a <em>prompt</em> on the screen, which is an alphanumeric string that (usually) ends in <strong>$</strong>. After the <strong>$</strong> is where we will type our commands. In the screenshot provided I typed the command <code>cd Desktop</code>, which we’ll get to shortly.</p>
+<p>You’ll see a <em>prompt</em> on the screen, which is an alphanumeric string that (usually) ends in <strong>$</strong>. Commands are typed after the <strong>$</strong>. In the screenshot provided I typed the command <code>cd Desktop</code>, which we’ll get to shortly.</p>
 <p>First we’ll use the <code>echo</code> command, which prints a string to the console. Type ‘echo hello’ at the prompt and press Return.</p>
 <pre class="r"><code>$ echo hello
 hello
@@ -336,10 +345,10 @@ hello</code></pre>
 <p>All of the calls above produce the same result. You can use quotations to define a string, but often you don’t have to! Be careful, though! If you forget to close the string like in the example below,</p>
 <pre class="r"><code>$ echo &quot;hello
 &gt;</code></pre>
-<p>you won’t get the prompt line back! To get back to the prompt line <strong>$</strong>, type <code>Ctrl-C</code>. This will get you out of trouble in many other cases as well.</p>
+<p>you won’t get the prompt line back! To get back to the prompt line, <strong>$</strong>, type <code>Ctrl-C</code>. This will get you out of trouble in many other cases as well.</p>
 <p><strong>Try it!</strong></p>
 <ul>
-<li>type <code>echo some cool message</code> to your prompt and press Return</li>
+<li>type <code>echo some cool message</code> after the <strong>$</strong> and press Return</li>
 </ul>
 <div id="asking-for-help" class="section level3">
 <h3>Asking for help</h3>
@@ -349,16 +358,17 @@ hello</code></pre>
 <pre class="r"><code>$ man echo</code></pre>
 <p>The above command will pull up the documentation for the <code>echo</code> command, which looks like this:</p>
 <p><img src="images/man_page.png" style="width:95%"></p>
-<p><code>man</code> pages can take getting used to, but all follow the same format. The following will help you get used to using <code>man</code>:</p>
+<p><code>man</code> pages can take getting used to! Luckily all follow the same format:</p>
 <ul>
 <li>commands, like <code>echo</code>, have <em>options</em>, or <strong>flags</strong>, that are specific to that command and help you customize what you are trying to do
 <ul>
 <li>similiar to <em>arguments</em> of a function in <code>R</code></li>
-<li>access by</li>
+<li>access using a <code>-</code> after the name of the command: <code>command_name -flag_name</code></li>
+<li>you can use multiple flags with one command like this: <code>command_name -flag1 -flag2</code></li>
 </ul></li>
 <li>The <strong>SYNOPSIS</strong> part of a <code>man</code> page shows what flags are available for that particular command
 <ul>
-<li>for the <code>echo</code> command there is one option: -n</li>
+<li>for the <code>echo</code> command there is only one flag option: <code>-n</code></li>
 <li>options are explained in the <strong>DESCRIPTION</strong> section</li>
 </ul></li>
 <li>exit a <code>man</code> page by pressing <code>Q</code> on your keyboard</li>
@@ -370,7 +380,7 @@ hello</code></pre>
 <div id="navigating-your-systems-file-structure" class="section level3">
 <h3>Navigating your system’s file structure</h3>
 <p>Folders within you computer are called <strong>directories</strong>. You can navigate around to different directories, remove or create directories, remove or create files, move files around, and list their contents all from the terminal.</p>
-<p>These section may seem fairly basic but these are also the commands I use the most often, so I’m going to spend some time on them. The commands that we’ll focus on for this part and what they do are listed below:</p>
+<p>These section may seem fairly basic but these are also the commands I use the most often, so I’m going to spend some time on them.</p>
 <ul>
 <li><code>pwd</code>: Return name of current working directory</li>
 <li><code>ls</code>: List files in your current working directory</li>
@@ -388,9 +398,19 @@ hello</code></pre>
 </ul></li>
 </ul>
 <p>Let’s open the terminal and navigate through our directory structure and take a look at what’s in some of the folders. Feel free to use <code>man command_name</code> if you want to learn more about some of the flags for these commands.</p>
+<p>Let’s get back to the terminal shell and try some of these out. Here’s a few example commands:</p>
+<pre class="r"><code>$ pwd
+/Users/juliawrobel
+$ cd Desktop
+$ pwd
+/Users/juliawrobel/Desktop
+$ ls
+file1.txt   file1.pdf
+$ man ls</code></pre>
 </div>
 <div id="creating-and-manipulating-files" class="section level3">
 <h3>Creating and manipulating files</h3>
+<p>Okay, so now we can navigate around our computer’s file system, but what about editing files and directories? The following commands will get you far.</p>
 <ul>
 <li><code>mkdir</code>: make directory</li>
 <li><code>rm</code>: remove a file (or directory, with special options). Irreversible, so be careful!</li>
@@ -399,7 +419,7 @@ hello</code></pre>
 <li><code>open</code>: Open a file or directory</li>
 <li><code>touch</code>: technically this command is for changing time stamps of files, but if the file name you give it does not exist it creates that file for you! This secondary purpose of the <code>touch</code> command can be very useful.</li>
 </ul>
-<p>We’re going to go through a sequence of these commands now.</p>
+<p>Let’s try some of these commands now.</p>
 <pre class="r"><code>$ pwd
 /Users/juliawrobel
 $ cd Desktop
@@ -457,7 +477,7 @@ $ rm animal2_copy.txt</code></pre>
 <div id="text-file-tricks" class="section level2">
 <h2>Text file tricks</h2>
 <p>I could have probably come up with a better header here- but the point is you can create, look at, and manipulate text files right from the terminal, and this can streamline your workflow.</p>
-<p>As an example we’re going to work with a text snippet from the [Wikipedia page on Giant Pandas(<a href="https://en.wikipedia.org/wiki/Giant_panda" class="uri">https://en.wikipedia.org/wiki/Giant_panda</a>).</p>
+<p>As an example we’re going to work with a text snippet from the <a href="https://en.wikipedia.org/wiki/Giant_panda">Wikipedia page on Giant Pandas</a>.</p>
 <pre><code>The giant panda (Ailuropoda melanoleuca, literally &quot;black and white cat-foot&quot;; Chinese: 大熊猫; pinyin: dà xióng māo, literally &quot;big bear cat&quot;), also known as panda bear or simply panda, is a bear native to south central China. 
 It is easily recognized by the large, distinctive black patches around its eyes, over the ears, and across its round body. 
 The name &quot;giant panda&quot; is sometimes used to distinguish it from the unrelated red panda. Though it belongs to the order Carnivora, the giant panda&#39;s diet is over 99% bamboo. 
@@ -474,7 +494,7 @@ Wild population estimates vary; one estimate shows that there are about 1,590 in
 Some reports also show that the number of giant pandas in the wild is on the rise. 
 
 In March 2015, Mongabay stated that the wild giant panda population had increased by 268, or 16.8%, to 1,864. In 2016, the IUCN reclassified the species from &quot;endangered&quot; to &quot;vulnerable&quot;.</code></pre>
-<p>Using tools we just learned about, create <strong>panda.txt</strong>, a file containing this paragraph about giant pandas. Put it in your <code>favorite_animals</code> directory. There are two ways you can do this: (1) using the <code>echo</code> command and the <code>&gt;</code> operator, and (2) using the <code>touch</code> command to create a new file then the <code>open</code> command to open and edit it.</p>
+<p>Using tools we just learned about, create <strong>panda.txt</strong>, a file containing the above text about giant pandas. Put it in your <code>favorite_animals</code> directory. There are two ways you can do this: (1) using the <code>echo</code> command and the <code>&gt;</code> operator, and (2) using the <code>touch</code> command to create a new file then the <code>open</code> command to open and edit it.</p>
 <div id="understanding-your-text-files" class="section level3">
 <h3>Understanding your text files</h3>
 <p>The following commands allow you to view, quantify, compare, and search text files.</p>
@@ -522,11 +542,23 @@ $ less panda.txt
 q
 $ cp panda2.txt
 $ diff panda.txt panda2.txt</code></pre>
+<p><strong>Try it!</strong></p>
+<p>Let’s add a photo of one of our favorite animals to the <code>favorite_animals</code> folder</p>
+<ol style="list-style-type: decimal">
+<li>Google image search an animal of your choice. I’m going to search <em>kit foxes</em></li>
+<li>Take a screen shot of one of those images. On Macs you can take screen shots using <code>Cmd-shift-4</code> and dragging the cursor over the area on the screen you want to select</li>
+<li>Screenshots automatically get saved to your Desktop with an uninformative name-
+<ol style="list-style-type: decimal">
+<li>Navigate to your Desktop</li>
+<li>Rename your screenshot and move it to the <code>favorite_animals</code> folder</li>
+</ol></li>
+<li>Navigate back to your <code>favorite_animals</code> folder and check that your image is there. What commands did you use to do this? What other commands could you also use?</li>
+</ol>
 </div>
 </div>
 <div id="running-r-within-the-terminal" class="section level2">
 <h2>Running <code>R</code> within the terminal</h2>
-<p>You can run <code>R</code> interactively right from the terminal. Just type <code>R</code> at the prompt then proceed as you would in an R console. Type <strong>q()</strong> to quit.</p>
+<p>You can run <code>R</code> interactively right from the terminal! Just type <code>R</code> at the prompt then proceed as you would in an R console. Type <strong>q()</strong> to quit.</p>
 <pre class="r"><code>$ R
 R is a collaborative project with many contributors.
 Type &#39;contributors()&#39; for more information and
@@ -585,6 +617,7 @@ $ history -c</code></pre>
 <li><a href="https://www.learnenough.com/command-line-tutorial">Learn enough command line to be dangerous</a>: this tutorial is more or less an expanded version of what I talked about today.</li>
 <li><a href="http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line">Another beginner’s guide</a></li>
 <li><a href="http://www.tutorialspoint.com/unix/">List of more tutorials</a>: tons of resources exist if you want to get more advanced!</li>
+<li><a href="https://www.learnenough.com/git-tutorial">Using <code>git</code> through the command line</a></li>
 </ul>
 </div>
 

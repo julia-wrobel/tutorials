@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-This tutorial gives an introduction to using the Unix command line. I provide background slides here as well some basic commands, but the bulk of the coding will be done live. We'll be recording the tutorial as we go and that video will be posted as well. 
+This tutorial provides an introduction to the Unix command line. I provide background slides here as well some basic commands, but the bulk of the coding will be done live. We'll be recording the tutorial as we go and that video will be posted as well (save technical difficulties). 
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -23,25 +23,27 @@ knitr::opts_chunk$set(
 
 
 The **OSX terminal** provides an command line interface to Mac operating system (OS). This allows you to
+
 * customize your workspace
 * work faster and more efficiently: no mouse or touchpad!
 * better debug when you break stuff
 
 This tutorial will teach you how to get started with the **Unix** command line, which encompasses _Linux_ systems _Android_, _iOS_, and _macOS_.
 
-I named this tutorial "Using the OSX terminal" but really what we learn hear will allow you to interact with any OS within the family Unix operating systems.
+I called this tutorial "Using the OSX terminal" but what we learn here will allow you to interact with any OS within the family Unix operating systems.
 
 ## Getting started
 
 There are two ways to open the OSX terminal.
-* open `terminal` with Searchlight
-* open Applications > Utilities > Terminal
+
+1. Open `terminal` with Searchlight using `Cmd-space`
+1. Open Applications > Utilities > Terminal
 
 You open terminal will look something like this: 
 
 <img src="images/terminal_open.png" style="width:75%">
 
-You'll see a _prompt_ on the screen, which is an alphanumeric string that (usually) ends in **\$**. After the **\$** is where we will type our commands. In the screenshot provided I typed the command `cd Desktop`, which we'll get to shortly.
+You'll see a _prompt_ on the screen, which is an alphanumeric string that (usually) ends in **\$**. Commands are typed after the **\$**. In the screenshot provided I typed the command `cd Desktop`, which we'll get to shortly.
 
 First we'll use the `echo` command, which prints a string to the console. Type 'echo hello' at the prompt and press Return.
 
@@ -61,11 +63,11 @@ $ echo "hello
 >
 ```
 
-you won't get the prompt line back! To get back to the prompt line **\$**, type `Ctrl-C`. This will get you out of trouble in many other cases as well.
+you won't get the prompt line back! To get back to the prompt line, **\$**, type `Ctrl-C`. This will get you out of trouble in many other cases as well.
 
 **Try it!**
 
-* type `echo some cool message` to your prompt and press Return
+* type `echo some cool message` after the **\$** and press Return
 
 ### Asking for help
 
@@ -83,13 +85,14 @@ The above command will pull up the documentation for the `echo` command, which l
 
 <img src="images/man_page.png" style="width:95%">
 
-`man` pages can take getting used to, but all follow the same format. The following will help you get used to using `man`:
+`man` pages can take getting used to! Luckily all follow the same format:
 
 * commands, like `echo`, have _options_, or **flags**, that are specific to that command and help you customize what you are trying to do
     * similiar to _arguments_ of a function in `R`
-    * access by
+    * access using a `-` after the name of the command: `command_name -flag_name`
+    * you can use multiple flags with one command like this: `command_name -flag1 -flag2`
 * The **SYNOPSIS** part of a `man` page shows what flags are available for that particular command
-    * for the `echo` command there is one option: -n
+    * for the `echo` command there is only one flag option: `-n`
     * options are explained in the **DESCRIPTION** section
 * exit a `man` page by pressing `Q` on your keyboard
 
@@ -106,7 +109,7 @@ What do we expect will happen here based on the _description_ in the `man` page 
 Folders within you computer are called **directories**. 
 You can navigate around to different directories, remove or create directories, remove or create files, move files around, and list their contents all from the terminal.
 
-These section may seem fairly basic but these are also the commands I use the most often, so I'm going to spend some time on them. The commands that we'll focus on for this part and what they do are listed below:
+These section may seem fairly basic but these are also the commands I use the most often, so I'm going to spend some time on them. 
 
 * `pwd`: Return name of current working directory
 * `ls`: List files in your current working directory
@@ -122,8 +125,23 @@ These section may seem fairly basic but these are also the commands I use the mo
 
 Let's open the terminal and navigate through our directory structure and take a look at what's in some of the folders. Feel free to use `man command_name` if you want to learn more about some of the flags for these commands.  
 
+Let's get back to the terminal shell and try some of these out. Here's a few example commands:
+
+```{r}
+$ pwd
+/Users/juliawrobel
+$ cd Desktop
+$ pwd
+/Users/juliawrobel/Desktop
+$ ls
+file1.txt	file1.pdf
+$ man ls
+```
+
 
 ### Creating and manipulating files
+
+Okay, so now we can navigate around our computer's file system, but what about editing files and directories? The following commands will get you far.
 
 * `mkdir`: make directory 
 * `rm`: remove a file (or directory, with special options). Irreversible, so be careful!
@@ -132,7 +150,7 @@ Let's open the terminal and navigate through our directory structure and take a 
 * `open`: Open a file or directory
 * `touch`: technically this command is for changing time stamps of files, but if the file name you give it does not exist it creates that file for you! This secondary purpose of the `touch` command can be very useful.
 
-We're going to go through a sequence of these commands now.
+Let's try some of these commands now.
 
 ```{r}
 $ pwd
@@ -195,7 +213,7 @@ In our next live coding chunk I'll incorporate some of these shortcuts.
 
 I could have probably come up with a better header here- but the point is you can create, look at, and manipulate text files right from the terminal, and this can streamline your workflow. 
 
-As an example we're going to work with a text snippet from the [Wikipedia page on Giant Pandas(https://en.wikipedia.org/wiki/Giant_panda).
+As an example we're going to work with a text snippet from the [Wikipedia page on Giant Pandas](https://en.wikipedia.org/wiki/Giant_panda).
 
 ```
 The giant panda (Ailuropoda melanoleuca, literally "black and white cat-foot"; Chinese: 大熊猫; pinyin: dà xióng māo, literally "big bear cat"), also known as panda bear or simply panda, is a bear native to south central China. 
@@ -216,7 +234,7 @@ Some reports also show that the number of giant pandas in the wild is on the ris
 In March 2015, Mongabay stated that the wild giant panda population had increased by 268, or 16.8%, to 1,864. In 2016, the IUCN reclassified the species from "endangered" to "vulnerable".
 ```
 
-Using tools we just learned about, create **panda.txt**, a file containing this paragraph about giant pandas. Put it in your `favorite_animals` directory. There are two ways you can do this: (1) using the `echo` command and the `>` operator, and (2) using the `touch` command to create a new file then the `open` command to open and edit it.
+Using tools we just learned about, create **panda.txt**, a file containing the above text about giant pandas. Put it in your `favorite_animals` directory. There are two ways you can do this: (1) using the `echo` command and the `>` operator, and (2) using the `touch` command to create a new file then the `open` command to open and edit it.
 
 ### Understanding your text files
 
@@ -262,10 +280,20 @@ $ cp panda2.txt
 $ diff panda.txt panda2.txt
 ```
 
+**Try it!**
+
+Let's add a photo of one of our favorite animals to the `favorite_animals` folder
+
+1. Google image search an animal of your choice. I'm going to search _kit foxes_
+1. Take a screen shot of one of those images. On Macs you can take screen shots using `Cmd-shift-4` and dragging the cursor over the area on the screen you want to select
+1. Screenshots automatically get saved to your Desktop with an uninformative name-
+    1. Navigate to your Desktop
+    1. Rename your screenshot and move it to the `favorite_animals` folder
+1. Navigate back to your `favorite_animals` folder and check that your image is there. What commands did you use to do this? What other commands could you also use?
 
 ## Running `R` within the terminal
 
-You can run `R` interactively right from the terminal. Just type `R` at the prompt then proceed as you would in an R console. Type **q()** to quit.
+You can run `R` interactively right from the terminal! Just type `R` at the prompt then proceed as you would in an R console. Type **q()** to quit.
 
 ```{r}
 $ R
@@ -339,3 +367,4 @@ $ history -c
 * [Learn enough command line to be dangerous](https://www.learnenough.com/command-line-tutorial): this tutorial is more or less an expanded version of what I talked about today.
 * [Another beginner's guide](http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line) 
 * [List of more tutorials](http://www.tutorialspoint.com/unix/): tons of resources exist if you want to get more advanced!
+* [Using `git` through the command line](https://www.learnenough.com/git-tutorial)
