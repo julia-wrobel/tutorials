@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -215,10 +313,202 @@ $(document).ready(function () {
 </div>
 
 
+<p>This tutorial gives an introduction to using the Mac (OSX) terminal. I provide background slides here as well some basic commands, but the bulk of the coding will be done live. We’ll be recording the tutorial as we go and that video will be posted as well.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="e741a909805341d6b1f5e806146a613c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-base-r" title="Base R" target="_blank">Base R</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="getting-started" class="section level2">
+<h2>Getting started</h2>
+<p>There are two ways to open the OSX terminal. * open <code>terminal</code> with Searchlight * open Applications &gt; Utilities &gt; Terminal</p>
+<p>You open terminal will look something like this:</p>
+<p><img src="images/terminal_open.png" style="width:75%"></p>
+<p>You’ll see a <em>prompt</em> on the screen, which is an alphanumeric string that (usually) ends in <strong>$</strong>. After the <strong>$</strong> is where we will type our commands. In the screenshot provided I typed the command <code>cd Desktop</code>, which we’ll get to shortly.</p>
+<p>First we’ll use the <code>echo</code> command, which prints a string to the console. Type ‘echo hello’ at the prompt and press Return.</p>
+<pre class="r"><code>$ echo hello
+hello
+$ echo &#39;hello&#39;
+hello
+$ echo &quot;hello&quot;
+hello</code></pre>
+<p>All of the calls above produce the same result. You can use quotations to define a string, but often you don’t have to! Be careful, though! If you forget to close the string like in the example below,</p>
+<pre class="r"><code>$ echo &quot;hello
+&gt;</code></pre>
+<p>you won’t get the prompt line back! To get back to the prompt line <strong>$</strong>, type <code>Ctrl-C</code>. This will get you out of trouble in many other cases as well.</p>
+<p><strong>Try it!</strong></p>
+<ul>
+<li>type <code>echo some cool message</code> to your prompt and press Return</li>
+</ul>
+<div id="asking-for-help" class="section level3">
+<h3>Asking for help</h3>
+<p>Typing <code>? function_name()</code> into your <code>R Studio</code> console brings up the help file, or <em>documentation</em>, for that particular function. Knowing how to access and read the documentation for a programming language is a crucial set of skills. How do we pull up documentation for the Unix and Unix-like operating systems?</p>
+<p><strong>Let me <em>man-page-splain</em> this to you</strong>.</p>
+<p>The documentation for Unix is pulled up using the <code>man</code> command, which stands for <em>manual</em>, as in user manual.</p>
+<pre class="r"><code>$ man echo</code></pre>
+<p>The above command will pull up the documentation for the <code>echo</code> command, which looks like this:</p>
+<p><img src="images/man_page.png" style="width:95%"></p>
+<p><code>man</code> pages can take getting used to, but all follow the same format. The following will help you get used to using <code>man</code>:</p>
+<ul>
+<li>commands, like <code>echo</code>, have <em>options</em>, or <strong>flags</strong>, that are specific to that command and help you customize what you are trying to do
+<ul>
+<li>similiar to <em>arguments</em> of a function in <code>R</code></li>
+<li>acces by</li>
+</ul></li>
+<li>The <strong>SYNOPSIS</strong> part of a <code>man</code> page shows what flags are available for that particular command
+<ul>
+<li>for the <code>echo</code> command there is one option: -n</li>
+<li>options are explained in the <strong>DESCRIPTION</strong> section</li>
+</ul></li>
+<li>exit a <code>man</code> page by pressing <code>Q</code> on your keyboard</li>
+</ul>
+<p>For example, try</p>
+<pre class="r"><code>$ echo -n hello world</code></pre>
+<p>What do we expect will happen here based on the <em>description</em> in the <code>man</code> page for <code>echo</code>?</p>
+</div>
+<div id="navigating-your-systems-file-structure" class="section level3">
+<h3>Navigating your system’s file structure</h3>
+<p>Folders within you computer are called <strong>directories</strong>. You can navigate around to different directories, remove or create directories, remove or create files, move files around, and list their contents all from the terminal.</p>
+<p>These section may seem fairly basic but these are also the commands I use the most often, so I’m going to spend some time on them. The commands that we’ll focus on for this part and what they do are listed below:</p>
+<ul>
+<li><code>pwd</code>: return name of current working directory</li>
+<li><code>ls</code>: list files in your current working directory</li>
+<li><code>ls -a</code>: list <strong>hidden</strong> files as well as other files
+<ul>
+<li>Hidden files are often part of the instructions for the OS or instructions for a particular application</li>
+<li>Usually invisible when searching through folders</li>
+<li>exist as hidden because they are not supposed to be oft modifyied or moved around</li>
+<li>Examples: .git, .gitignore, .Rhistory</li>
+</ul></li>
+<li><code>cd</code>: change directory</li>
+</ul>
+<p>Let’s open the terminal and navigate through our directory structure and take a look at what’s in some of the folders. Feel free to use <code>man command_name</code> if you want to learn more about some of the flags for these commands.</p>
+</div>
+<div id="creating-and-manipulating-files" class="section level3">
+<h3>Creating and manipulating files</h3>
+<ul>
+<li><code>mkdir</code>: make directory</li>
+<li><code>rm</code>: remove a file (or directory, with special options). Irreversible, so be careful!</li>
+<li><code>cp</code>: Copy a file</li>
+<li><code>mv</code>: Move and rename files. Can be used just to rename a file if you do not want to retain a copy of the old file</li>
+<li><code>open</code>: Open a file or directory</li>
+<li><code>touch</code>: technically this command is for changing time stamps of files, but if the file name you give it does not exist it creates that file for you! This secondary purpose of the <code>touch</code> command can be very useful.</li>
+</ul>
+<p>We’re going to go through a sequence of these commands now.</p>
+<pre class="r"><code>$ pwd
+/Users/juliawrobel
+$ cd Desktop
+$ mkdir favorite_animals
+$ ls
+$ cd favorite_animals
+$ ls
+$ echo &quot;snakes are my favorite animal. I used to have a pet ball python&quot;
+snakes are my favorite animal. I used to have a pet ball python
+$ echo &quot;snakes are my favorite animal. I used to have a pet ball python&quot; &gt; snake.txt
+snake.txt
+$ ls
+snake.txt
+$ cat snake.txt
+snakes are my favorite animal. I used to have a pet ball python
+$ mv snake.txt reptile.txt
+$ ls
+reptile.txt
+$ touch reptile2.txt
+$ ls 
+reptile.txt reptile2.txt
+$ touch gerbil.R
+$ ls *.txt
+animal.txt  reptile2.txt
+$ ls -l *.txt
+$ cp reptile2.txt animal2_copy.txt
+$ open animal2.txt
+$ rm animal2_copy.txt</code></pre>
+<p><strong>Try it!</strong></p>
+<ol style="list-style-type: decimal">
+<li>create a new directory within your favorite animals directory called junk_folder</li>
+<li>rename the directory</li>
+<li>navigate into that directory and put a new text file in it</li>
+<li>navigate up a directory</li>
+<li>delete the directory previously named junk_folder and all of it’s contents</li>
+</ol>
+<p>The last step may be a little more challenging. <strong>Hint</strong>: use an option from the <code>man</code> page for the <code>rm</code> command.</p>
+</div>
+</div>
+<div id="tricks-and-shortcuts" class="section level2">
+<h2>Tricks and shortcuts</h2>
+<ul>
+<li>up arrow: access previous commands</li>
+<li>tab: autocomplete! Super useful</li>
+<li><code>!command_name</code>: Repeats the line from the last time you used that command. Useful for long commands you don’t want to re-type</li>
+<li><code>Ctrl-A</code> : Moves to the beginning of the line</li>
+<li><code>Ctrl-E</code>: Moves to the end of the line</li>
+<li><code>Ctrl-U</code>: Clears everthing to the left of the cursor</li>
+<li><code>Option-click</code>: Moves cursor to location clicked</li>
+<li><code>clear</code>: Typed as a command at the prompt, this clears the window</li>
+</ul>
+<p>In our next live coding chunk I’ll incorporate some of these shortcuts.</p>
+</div>
+<div id="text-file-tricks" class="section level2">
+<h2>Text file tricks</h2>
+<p>I could have probably come up with a better header here- but the point is you can create, look at, and manipulate text files right from the terminal, and this can streamline your workflow.</p>
+<p>As an example we’re going to work with a text snippet from the [Wikipedia page on Giant Pandas(<a href="https://en.wikipedia.org/wiki/Giant_panda" class="uri">https://en.wikipedia.org/wiki/Giant_panda</a>).</p>
+<pre><code>The giant panda (Ailuropoda melanoleuca, literally &quot;black and white cat-foot&quot;; Chinese: 大熊猫; pinyin: dà xióng māo, literally &quot;big bear cat&quot;), also known as panda bear or simply panda, is a bear native to south central China. It is easily recognized by the large, distinctive black patches around its eyes, over the ears, and across its round body. The name &quot;giant panda&quot; is sometimes used to distinguish it from the unrelated red panda. Though it belongs to the order Carnivora, the giant panda&#39;s diet is over 99% bamboo. Giant pandas in the wild will occasionally eat other grasses, wild tubers, or even meat in the form of birds, rodents, or carrion. In captivity, they may receive honey, eggs, fish, yams, shrub leaves, oranges, or bananas along with specially prepared food.</code></pre>
+<p>Using tools we just learned about, create <strong>panda.txt</strong>, a file containing this paragraph about giant pandas. Put it in your <code>favorite_animals</code> directory. There are two ways you can do this: (1) using the <code>echo</code> command and the <code>&gt;</code> operator, and (2) using the <code>touch</code> command to create a new file then the <code>open</code> command to open and edit it.</p>
+<div id="understanding-your-text-files" class="section level3">
+<h3>Understanding your text files</h3>
+<p>The following commands allow you to view, quantify, compare, and search text files.</p>
+<ul>
+<li><code>head</code>: shows the first 10 lines of a file<br />
+</li>
+<li><code>tail</code>: shows the last 10 lines of a file</li>
+<li><code>wc</code>: word count! Counts the number of lines, words, and bytes in a file</li>
+<li><code>diff</code>: Compare two files line by line</li>
+<li><code>&gt;</code>: Redirect operator (we touched on this earlier)
+<ul>
+<li>Used to direct the results of a command to a new file</li>
+<li>e.g. <code>head panda.txt &gt; panda_head.txt</code></li>
+</ul></li>
+<li><code>|</code>: Pipe operator
+<ul>
+<li>Used to string together commands</li>
+<li>Analogous to <code>%&gt;%</code> function in <code>R</code></li>
+<li>e.g. <code>head panda.txt | wc</code></li>
+</ul></li>
+<li><code>less</code></li>
+</ul>
+</div>
+</div>
+<div id="curl" class="section level2">
+<h2>curl</h2>
+<p><code>curl</code>, or <code>cURL</code>, stands for copy URL and allows you to interact with webpages. Since <code>curl</code> is not part of the core Unix commands you may have to download it. Check if it’s available on your system using</p>
+<pre class="r"><code>$ which curl
+/Users/juliawrobel/anaconda/bin/curl</code></pre>
+<p>If it’s available this command will outputs file path, as above. If you do not have it available</p>
+<div id="other-cool-stuff" class="section level3">
+<h3>Other cool stuff</h3>
+<ul>
+<li><code>diff</code>: compare two files</li>
+</ul>
+</div>
+</div>
+<div id="piping" class="section level2">
+<h2>Piping</h2>
+<pre class="r"><code>cd Desktop</code></pre>
+</div>
+<div id="resources" class="section level2">
+<h2>Resources</h2>
+<ul>
+<li><a href="https://www.learnenough.com/command-line-tutorial">Learn enough command line to be dangerous</a>: this tutorial is more or less an expanded version of what I talked about today.</li>
+</ul>
+</div>
 
 
 
-
+</div>
+</div>
 
 </div>
 

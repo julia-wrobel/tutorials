@@ -1,3 +1,235 @@
 ---
 title: "How to use the OSX Terminal"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
 ---
+
+This tutorial gives an introduction to using the Mac (OSX) terminal. I provide background slides here as well some basic commands, but the bulk of the coding will be done live. We'll be recording the tutorial as we go and that video will be posted as well. 
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%",
+  eval = FALSE
+)
+```
+
+
+## What is the OSX terminal?
+
+
+## Getting started
+
+There are two ways to open the OSX terminal.
+* open `terminal` with Searchlight
+* open Applications > Utilities > Terminal
+
+You open terminal will look something like this: 
+
+<img src="images/terminal_open.png" style="width:75%">
+
+You'll see a _prompt_ on the screen, which is an alphanumeric string that (usually) ends in **\$**. After the **\$** is where we will type our commands. In the screenshot provided I typed the command `cd Desktop`, which we'll get to shortly.
+
+First we'll use the `echo` command, which prints a string to the console. Type 'echo hello' at the prompt and press Return.
+
+```{r}
+$ echo hello
+hello
+$ echo 'hello'
+hello
+$ echo "hello"
+hello
+```
+
+All of the calls above produce the same result. You can use quotations to define a string, but often you don't have to! Be careful, though! If you forget to close the string like in the example below,
+
+```{r}
+$ echo "hello
+>
+```
+
+you won't get the prompt line back! To get back to the prompt line **\$**, type `Ctrl-C`. This will get you out of trouble in many other cases as well.
+
+**Try it!**
+
+* type `echo some cool message` to your prompt and press Return
+
+### Asking for help
+
+Typing `? function_name()` into your `R Studio` console brings up the help file, or _documentation_, for that particular function. Knowing how to access and read the documentation for a programming language is a crucial set of skills. How do we pull up documentation for the Unix and Unix-like operating systems?
+
+**Let me _man-page-splain_ this to you**. 
+
+The documentation for Unix is pulled up using the `man` command, which stands for _manual_, as in user manual.
+
+```{r}
+$ man echo
+```
+
+The above command will pull up the documentation for the `echo` command, which looks like this:
+
+<img src="images/man_page.png" style="width:95%">
+
+`man` pages can take getting used to, but all follow the same format. The following will help you get used to using `man`:
+
+* commands, like `echo`, have _options_, or **flags**, that are specific to that command and help you customize what you are trying to do
+    * similiar to _arguments_ of a function in `R`
+    * acces by
+* The **SYNOPSIS** part of a `man` page shows what flags are available for that particular command
+    * for the `echo` command there is one option: -n
+    * options are explained in the **DESCRIPTION** section
+* exit a `man` page by pressing `Q` on your keyboard
+
+For example, try
+
+```{r}
+$ echo -n hello world
+```
+
+What do we expect will happen here based on the _description_ in the `man` page for `echo`?
+
+### Navigating your system's file structure
+
+Folders within you computer are called **directories**. 
+You can navigate around to different directories, remove or create directories, remove or create files, move files around, and list their contents all from the terminal.
+
+These section may seem fairly basic but these are also the commands I use the most often, so I'm going to spend some time on them. The commands that we'll focus on for this part and what they do are listed below:
+
+* `pwd`: return name of current working directory
+* `ls`: list files in your current working directory
+  * `ls -a`: list **hidden** files as well as other files
+      * Hidden files are often part of the instructions for the OS or instructions for a particular application
+      * Usually invisible when searching through folders
+      * exist as hidden because they are not supposed to be oft modifyied or moved around 
+      * Examples: .git, .gitignore, .Rhistory 
+* `cd`: change directory
+
+Let's open the terminal and navigate through our directory structure and take a look at what's in some of the folders. Feel free to use `man command_name` if you want to learn more about some of the flags for these commands.  
+
+### Creating and manipulating files
+
+* `mkdir`: make directory 
+* `rm`: remove a file (or directory, with special options). Irreversible, so be careful!
+* `cp`: Copy a file
+* `mv`: Move and rename files. Can be used just to rename a file if you do not want to retain a copy of the old file
+* `open`: Open a file or directory
+* `touch`: technically this command is for changing time stamps of files, but if the file name you give it does not exist it creates that file for you! This secondary purpose of the `touch` command can be very useful.
+
+We're going to go through a sequence of these commands now.
+
+```{r}
+$ pwd
+/Users/juliawrobel
+$ cd Desktop
+$ mkdir favorite_animals
+$ ls
+$ cd favorite_animals
+$ ls
+$ echo "snakes are my favorite animal. I used to have a pet ball python"
+snakes are my favorite animal. I used to have a pet ball python
+$ echo "snakes are my favorite animal. I used to have a pet ball python" > snake.txt
+snake.txt
+$ ls
+snake.txt
+$ cat snake.txt
+snakes are my favorite animal. I used to have a pet ball python
+$ mv snake.txt reptile.txt
+$ ls
+reptile.txt
+$ touch reptile2.txt
+$ ls 
+reptile.txt	reptile2.txt
+$ touch gerbil.R
+$ ls *.txt
+animal.txt	reptile2.txt
+$ ls -l *.txt
+$ cp reptile2.txt animal2_copy.txt
+$ open animal2.txt
+$ rm animal2_copy.txt
+```
+
+
+**Try it!**
+
+1. create a new directory within your favorite animals directory called junk_folder
+1. rename the directory
+1. navigate into that directory and put a new text file in it
+1. navigate up a directory
+1. delete the directory previously named junk_folder and all of it's contents
+
+The last step may be a little more challenging. **Hint**: use an option from the `man` page for the `rm` command.
+
+## Tricks and shortcuts
+
+* up arrow: access previous commands
+* tab: autocomplete! Super useful
+* `!command_name`: Repeats the line from the last time you used that command. Useful for long commands you don't want to re-type
+* `Ctrl-A` : Moves to the beginning of the line
+* `Ctrl-E`: Moves to the end of the line
+* `Ctrl-U`: Clears everthing to the left of the cursor
+* `Option-click`: Moves cursor to location clicked
+* `clear`: Typed as a command at the prompt, this clears the window
+
+In our next live coding chunk I'll incorporate some of these shortcuts.
+
+## Text file tricks
+
+I could have probably come up with a better header here- but the point is you can create, look at, and manipulate text files right from the terminal, and this can streamline your workflow. 
+
+As an example we're going to work with a text snippet from the [Wikipedia page on Giant Pandas(https://en.wikipedia.org/wiki/Giant_panda).
+
+```
+The giant panda (Ailuropoda melanoleuca, literally "black and white cat-foot"; Chinese: 大熊猫; pinyin: dà xióng māo, literally "big bear cat"), also known as panda bear or simply panda, is a bear native to south central China. It is easily recognized by the large, distinctive black patches around its eyes, over the ears, and across its round body. The name "giant panda" is sometimes used to distinguish it from the unrelated red panda. Though it belongs to the order Carnivora, the giant panda's diet is over 99% bamboo. Giant pandas in the wild will occasionally eat other grasses, wild tubers, or even meat in the form of birds, rodents, or carrion. In captivity, they may receive honey, eggs, fish, yams, shrub leaves, oranges, or bananas along with specially prepared food.
+```
+
+Using tools we just learned about, create **panda.txt**, a file containing this paragraph about giant pandas. Put it in your `favorite_animals` directory. There are two ways you can do this: (1) using the `echo` command and the `>` operator, and (2) using the `touch` command to create a new file then the `open` command to open and edit it.
+
+### Understanding your text files
+
+The following commands allow you to view, quantify, compare, and search text files.
+
+* `head`: shows the first 10 lines of a file  
+* `tail`: shows the last 10 lines of a file
+* `wc`: word count! Counts the number of lines, words, and bytes in a file
+* `diff`: Compare two files line by line
+* `>`: Redirect operator (we touched on this earlier)
+    * Used to direct the results of a command to a new file
+    * e.g. `head panda.txt > panda_head.txt`
+* `|`: Pipe operator
+    * Used to string together commands
+    * Analogous to `%>%` function in `R`
+    * e.g. `head panda.txt | wc`
+* `less`
+
+
+
+## curl
+
+`curl`, or `cURL`, stands for copy URL and allows you to interact with webpages. Since `curl` is not part of the core Unix commands you may have to download it.  Check if it's available on your system using
+
+```{r}
+$ which curl
+/Users/juliawrobel/anaconda/bin/curl
+```
+
+If it's available this command will outputs file path, as above. If you do not have it available 
+
+### Other cool stuff
+
+* `diff`: compare two files
+
+## Piping
+
+
+```{r}
+cd Desktop
+```
+
+
+## Resources
+
+* [Learn enough command line to be dangerous](https://www.learnenough.com/command-line-tutorial): this tutorial is more or less an expanded version of what I talked about today.
