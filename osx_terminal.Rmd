@@ -36,7 +36,7 @@ I called this tutorial "Using the OSX terminal" but what we learn here will allo
 
 There are two ways to open the OSX terminal.
 
-1. Open `terminal` with Searchlight using `Cmd-space`
+1. Open `terminal` with Spotlight Search using `Cmd-space`
 1. Open Applications > Utilities > Terminal
 
 You open terminal will look something like this: 
