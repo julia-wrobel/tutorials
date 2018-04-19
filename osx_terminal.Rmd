@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-This tutorial provides an introduction to the Unix command line. I provide background slides here as well some basic commands, but the bulk of the coding will be done live. We'll be recording the tutorial as we go and that video will be posted as well (save technical difficulties). 
+This tutorial provides an introduction to the Unix command line. 
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(

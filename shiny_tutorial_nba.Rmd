@@ -1,0 +1,144 @@
+---
+title: "Learning Shiny with NBA data"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+  
+For R ladies event on **DATE**. Thanks to the NBA for agreeing to host!!
+
+This tutorial provides an introduction to Shiny, RStudio's framework introduced in 2012 for building interactive plots and web applications in `R`. In this tutorial I will provide some introduction to Shiny, and we will make and deploy a Shiny app. T
+
+Goals
+
+* start to finish: make an app and deploy it
+* use ggplot
+* use plotly
+* explain how shiny works
+* explain difference between react and observe
+* explain how to better debug with shiny
+* how to deploy to shiny servers
+* include shell app and final version
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+collapse = TRUE,
+fig.width = 6,
+fig.asp = .6,
+out.width = "90%"
+)
+```
+
+
+## Getting started
+
+Before we begin, make sure you have the `shiny`, `plotly`, and the `tidyverse` packages.
+
+```{r, eval = FALSE}
+install.packages(c("shiny", "plotly", "tidyverse"))
+```
+
+Run an example of a simple shiny app to ensure the package is installed properly. 
+
+```{r test_shiny, eval = FALSE}
+library(shiny)
+runExample("01_hello")
+```
+
+## Shiny basics
+
+Each Shiny app has a `ui` and a `server` file, both of which we have to define. The `ui` defines a webpage that the user interacts with, it controls layout and appearance. The `server` file is a set of instructions your computer needs to build the app. `R` code is executed in the background, and output depends on the user input and this `R` code.
+
+<body>
+<img src="images/what_is_shiny.png" style="width:75%">
+<p><cite>image from</cite> https://deanattali.com/blog/building-shiny-apps-tutorial/</p>
+</body>
+
+## Create shiny framework
+shin
+
+All Shiny apps have the sample template. 
+
+```{r shiny_template, eval = FALSE}
+library(shiny)
+ui <- fluidPage()
+server <- function(input, output) {}
+shinyApp(ui = ui, server = server)
+```
+
+This template itself is a minimal Shiny app, try running the code.  Copy this template into a new file called `app.R`, and save it in a new folder. After saving the file, you should see a _Run App_ button at the top, indicating RStudio has recognized the file as a Shiny app
+
+<img src="images/empty_app.png" style="width:100%">
+
+Two ways to create Shiny apps:
+
+1. Put both `ui` and `server` code into single file called `app.R`, ideal for simple apps. If you are using a single file, the file **must** be called `app.R` for the app to run.
+1. Create separate `ui.R` and `server.R` files, ideal for more complicated apps.
+
+We will use the second approach for this tutorial. This is the preferable way to write apps unless your app is super simple, and you can initialize a Shiny app right from RStudio:
+
+<img src="images/initiate_app1.png" style="width:100%">
+
+Select **Shiny Web App...** and the following will pop up:
+
+<img src="images/initiate_app2.png" style="width:100%">
+
+Select **Multiple File** to generate an app with separate `ui.R` and `server.R` files. I called my app "new_app" and stored it in a folder on my Desktop. To run the app you can do either of the following:
+
+1. Open the `server.R` or `ui.R` file and click the Run App button.
+1. Enter `shiny::runApp("~/Desktop/new_app/")` in your R console
+
+This is intended to show how a Shiny app can be initialized. For the rest of the tutorial we will be working with the `shiny_nba` file I provided.
+
+## Shiny NBA
+
+Download and unzip the `shiny_nba` folder provided. Open the .Rproj in the folder - this will open up RStudio and automatically set your working directory to this folder. Notice what's in the folder:
+
+* a `ui.R` file
+* a `server.R` file
+* a `nba_shots.RData` data object which contains the data for our app
+* a `helper.R` file with contains functions sourced by our app
+
+Try running the app. App has simple structure, allows you to select a new player, doesn't make any plots yet. Has one widget. Show/explain where data is , how you're calling it, what helper functions are doing. put in code to build a plot then add that plot in. Add another widget that allows you to sort the data by season as well as player.
+
+### Widgets
+
+### render* functions
+
+### Court plot
+
+
+
+
+flow:
+
+* open new folder with nba app using that R project
+* run app to show what it looks like (should be empty frame)
+* add one tab, use this to mention that you can make the layout complicated with different ways to lay it out and lots of tabs. Links to resources for this at the bottom,
+but I'm not going to focus on it right now.
+* talk about widgets
+* put data in the right place
+* load libraries in the right place
+* build widget to access datanames, show what turns up in different scenarios
+* build ggplot object that shows cour data for the subject. Place ggplot object into the shiny framework and edit it to show how you incorporate it into shiny. Make sure it runs first!
+* add basketball icon to tab of this thing
+
+## get fancier with tabs
+
+## plotly and shiny
+
+## reactive vs. observer stuff
+
+## Debugging shiny
+
+## Deploying your app
+
+## Resources
+
+* [Embedding Shiny in Rmarkdown documents](https://rmarkdown.rstudio.com/authoring_shiny.html)
+
+* ["Case Studies in Shiny": Dean Attali's short course at DataCamp](https://www.datacamp.com/courses/building-web-applications-in-r-with-shiny-case-studies)
+
+* [Gallery of user-submitted Shiny apps](http://www.showmeshiny.com/)
+* [Shiny cheatsheet](http://shiny.rstudio.com/images/shiny-cheatsheet.pdf)

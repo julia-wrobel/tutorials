@@ -1,18 +1,18 @@
-name: "Yay internet!"
-output_dir: "."
+name: Yay internet!
+output_dir: '.'
 navbar:
-  title: "Tutorials"
+  title: Tutorials
   right:
-    - text: "About"
-      href: about.html
-    - icon: fa-envelope fa-lg
-      href: mailto:<jw3134@cumc.columbia.edu>
-    - icon: fa-github fa-lg
-      href: http://github.com/julia-wrobel/
-    - icon: fa-twitter 
-      href: https://twitter.com/jwrobel1
-
+  - icon: fa-envelope fa-lg
+    href: mailto:<jw3134@cumc.columbia.edu>
+  - icon: fa-github fa-lg
+    href: http://github.com/julia-wrobel/
+  - icon: fa-twitter
+    href: https://twitter.com/jwrobel1
 output:
   html_document:
     theme: lumen
     css: styles.css
+    lib_dir: site_libs
+    self_contained: no
+
