@@ -312,22 +312,11 @@ div.tocify {
 </div>
 
 
-<p>For R ladies event on <strong>DATE</strong>. Thanks to the NBA for agreeing to host!!</p>
-<p>This tutorial provides an introduction to Shiny, RStudio’s framework introduced in 2012 for building interactive plots and web applications in <code>R</code>. In this tutorial I will provide some introduction to Shiny, and we will make and deploy a Shiny app. T</p>
-<p>Goals</p>
-<ul>
-<li>start to finish: make an app and deploy it</li>
-<li>use ggplot</li>
-<li>use plotly</li>
-<li>explain how shiny works</li>
-<li>explain difference between react and observe</li>
-<li>explain how to better debug with shiny</li>
-<li>how to deploy to shiny servers</li>
-<li>include shell app and final version</li>
-</ul>
+<p>This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks again to the NBA New York office for agreeing to host!!</p>
+<p>Shiny is RStudio’s framework introduced in 2012 for building interactive plots and web applications in <code>R</code>. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the <a href="http://stats.nba.com/">NBA stats API</a>. For inspiration and guidance I drew on Thanks to <a href="https://github.com/toddwschneider/ballr">Todd Schneider’s ballR app</a> inspiration and info on how to scrape the data. I highly recommend checking it out!</p>
 <div id="getting-started" class="section level2">
 <h2>Getting started</h2>
-<p>Before we begin, make sure you have the <code>shiny</code>, <code>plotly</code>, and <code>tidyverse</code> packages installed.</p>
+<p>Before we begin, make sure you have the <code>shiny</code>, <code>plotly</code>, and <code>tidyverse</code> packages installed. I have created a template for our app, please <a href="Downloads/shiny_nba.zip">download</a> and unzip this as well.</p>
 <pre class="r"><code>install.packages(c(&quot;shiny&quot;, &quot;plotly&quot;, &quot;tidyverse&quot;))</code></pre>
 <p>Run an example of a simple shiny app to ensure the package is installed properly.</p>
 <pre class="r"><code>library(shiny)
@@ -343,9 +332,8 @@ runExample(&quot;01_hello&quot;)</code></pre>
 <cite>image from</cite> <a href="https://deanattali.com/blog/building-shiny-apps-tutorial/" class="uri">https://deanattali.com/blog/building-shiny-apps-tutorial/</a>
 </p>
 </body>
-</div>
-<div id="the-shiny-framework" class="section level2">
-<h2>The shiny framework</h2>
+<div id="the-shiny-framework" class="section level3">
+<h3>The shiny framework</h3>
 <p>All Shiny apps follow the same overall structure. <code>fluidPage()</code> controls the page layout for the ui. We define <code>server</code> as a function with arguments <code>input</code> and <code>output</code>.</p>
 <pre class="r"><code>library(shiny)
 ui &lt;- fluidPage()
@@ -369,9 +357,10 @@ shinyApp(ui = ui, server = server)</code></pre>
 </ol>
 <p>This is intended to show how a Shiny app can be initialized. For the rest of the tutorial we will be working with the <code>shiny_nba</code> file I provided.</p>
 </div>
+</div>
 <div id="shiny-nba" class="section level2">
 <h2>Shiny NBA</h2>
-<p>Download and unzip the <code>shiny_nba</code> folder provided. Open the .Rproj in the folder - this will open up RStudio and automatically set your working directory to this folder. Notice what’s in the folder:</p>
+<p>If you haven’t already, download and unzip the <a href="Downloads/shiny_nba.zip">shiny_nba</a> folder provided. Open the .Rproj in the folder - this will open up RStudio and automatically set your working directory to this folder. Notice what’s in the folder:</p>
 <ul>
 <li>a <code>ui.R</code> file</li>
 <li>a <code>server.R</code> file</li>
@@ -386,8 +375,8 @@ shinyApp(ui = ui, server = server)</code></pre>
 <p>All input functions have <code>inputId</code> and <code>label</code> as the first two arguments. The <code>inputId</code> is a string that the server side will use to access the value of the user input. For example, if <code>inputId = &quot;slider_widget&quot;</code> then on the server side you would use <code>input$slider_widget</code> to use its value.<code>label</code> is the title for the widget that will show up in the ui.</p>
 <p><strong>Exercise</strong>: Try adding another widget to the sidebar.</p>
 </div>
-<div id="output-options-and-render-statments" class="section level3">
-<h3>Output options and Render statments</h3>
+<div id="output-options-and-render-statements" class="section level3">
+<h3>Output options and render statements</h3>
 <p>Output options go in the <code>ui.R</code> file. The first argument of all output functions is “outputId”, which is used to identify each output and therefore must be unique for each output. Examples include <code>plotOutput()</code>, <code>textOutput()</code>, <code>tableOutput()</code>.</p>
 <p><strong>Debugging tip</strong>: Make sure you have a comma between each input call and output call! Commas are needed between elements for the <code>ui</code> but not for the <code>server</code>.</p>
 <p>Render statements go in the <code>server.R</code> file. They take user input from the widgets and execute a function. Examples including <code>renderTable()</code> to make tables, <code>renderText()</code> for text, and <code>renderPlot()</code> for certain plots (<em>works with plots made using base</em> <code>R</code> <em>or</em> <code>ggplot2</code> <em>but for plots made using</em> <code>plotly</code> <em>use</em> <code>renderPlotly()</code>).</p>

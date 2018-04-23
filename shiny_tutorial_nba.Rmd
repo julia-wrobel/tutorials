@@ -6,20 +6,10 @@ output:
     toc_float: true
 ---
   
-For R ladies event on **DATE**. Thanks to the NBA for agreeing to host!!
+This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks again to the NBA New York office for agreeing to host!!
 
-This tutorial provides an introduction to Shiny, RStudio's framework introduced in 2012 for building interactive plots and web applications in `R`. In this tutorial I will provide some introduction to Shiny, and we will make and deploy a Shiny app. T
+Shiny is RStudio's framework introduced in 2012 for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). For inspiration and guidance I drew on Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration and info on how to scrape the data. I highly recommend checking it out!
 
-Goals
-
-* start to finish: make an app and deploy it
-* use ggplot
-* use plotly
-* explain how shiny works
-* explain difference between react and observe
-* explain how to better debug with shiny
-* how to deploy to shiny servers
-* include shell app and final version
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -33,7 +23,7 @@ out.width = "90%"
 
 ## Getting started
 
-Before we begin, make sure you have the `shiny`, `plotly`, and  `tidyverse` packages installed.
+Before we begin, make sure you have the `shiny`, `plotly`, and  `tidyverse` packages installed. I have created a template for our app, please [download](Downloads/shiny_nba.zip) and unzip this as well.
 
 ```{r, eval = FALSE}
 install.packages(c("shiny", "plotly", "tidyverse"))
@@ -57,7 +47,7 @@ Each Shiny app has a `ui` and a `server` file, both of which we have to define. 
 <p><cite>image from</cite> https://deanattali.com/blog/building-shiny-apps-tutorial/</p>
 </body>
 
-## The shiny framework
+### The shiny framework
 
 All Shiny apps follow the same overall structure. `fluidPage()` controls the page layout for the ui. We define `server` as a function with arguments `input` and `output`.
 
@@ -94,7 +84,7 @@ This is intended to show how a Shiny app can be initialized. For the rest of the
 
 ## Shiny NBA
 
-Download and unzip the `shiny_nba` folder provided. Open the .Rproj in the folder - this will open up RStudio and automatically set your working directory to this folder. Notice what's in the folder:
+If you haven't already, download and unzip the [shiny_nba](Downloads/shiny_nba.zip) folder provided. Open the .Rproj in the folder - this will open up RStudio and automatically set your working directory to this folder. Notice what's in the folder:
 
 * a `ui.R` file
 * a `server.R` file
@@ -114,7 +104,7 @@ All input functions have `inputId` and `label` as the first two arguments. The `
 
 **Exercise**: Try adding another widget to the sidebar.
 
-### Output options and Render statments
+### Output options and render statements
 
 Output options go in the `ui.R` file. The first argument of all output functions is "outputId", which is used to identify each output and therefore must be unique for each output. Examples include `plotOutput()`, `textOutput()`, `tableOutput()`.
 
