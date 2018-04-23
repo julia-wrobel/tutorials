@@ -33,7 +33,7 @@ out.width = "90%"
 
 ## Getting started
 
-Before we begin, make sure you have the `shiny`, `plotly`, and the `tidyverse` packages.
+Before we begin, make sure you have the `shiny`, `plotly`, and  `tidyverse` packages installed.
 
 ```{r, eval = FALSE}
 install.packages(c("shiny", "plotly", "tidyverse"))
@@ -46,6 +46,8 @@ library(shiny)
 runExample("01_hello")
 ```
 
+A slider bar the allows you to change the number bins in the histogram shown.
+
 ## Shiny basics
 
 Each Shiny app has a `ui` and a `server` file, both of which we have to define. The `ui` defines a webpage that the user interacts with, it controls layout and appearance. The `server` file is a set of instructions your computer needs to build the app. `R` code is executed in the background, and output depends on the user input and this `R` code.
@@ -55,10 +57,9 @@ Each Shiny app has a `ui` and a `server` file, both of which we have to define. 
 <p><cite>image from</cite> https://deanattali.com/blog/building-shiny-apps-tutorial/</p>
 </body>
 
-## Create shiny framework
-shin
+## The shiny framework
 
-All Shiny apps have the sample template. 
+All Shiny apps follow the same overall structure. `fluidPage()` controls the page layout for the ui. We define `server` as a function with arguments `input` and `output`.
 
 ```{r shiny_template, eval = FALSE}
 library(shiny)
@@ -67,7 +68,7 @@ server <- function(input, output) {}
 shinyApp(ui = ui, server = server)
 ```
 
-This template itself is a minimal Shiny app, try running the code.  Copy this template into a new file called `app.R`, and save it in a new folder. After saving the file, you should see a _Run App_ button at the top, indicating RStudio has recognized the file as a Shiny app
+This template itself is a minimal Shiny app, try running the code.  Copy this template into a new file called `app.R`, and save it in a new folder. After saving the file, you should see a _Run App_ button at the top, indicating RStudio has recognized the file as a Shiny app.
 
 <img src="images/empty_app.png" style="width:100%">
 
@@ -76,7 +77,7 @@ Two ways to create Shiny apps:
 1. Put both `ui` and `server` code into single file called `app.R`, ideal for simple apps. If you are using a single file, the file **must** be called `app.R` for the app to run.
 1. Create separate `ui.R` and `server.R` files, ideal for more complicated apps.
 
-We will use the second approach for this tutorial. This is the preferable way to write apps unless your app is super simple, and you can initialize a Shiny app right from RStudio:
+We will use the second approach for this tutorial. This is the preferable way to write apps unless your app is super simple. You can initialize a Shiny app using either approach right from RStudio:
 
 <img src="images/initiate_app1.png" style="width:100%">
 
@@ -98,16 +99,62 @@ Download and unzip the `shiny_nba` folder provided. Open the .Rproj in the folde
 * a `ui.R` file
 * a `server.R` file
 * a `nba_shots.RData` data object which contains the data for our app
-* a `helper.R` file with contains functions sourced by our app
+* a `helper.R` file with extra `R` code our app uses
 
-Try running the app. App has simple structure, allows you to select a new player, doesn't make any plots yet. Has one widget. Show/explain where data is , how you're calling it, what helper functions are doing. put in code to build a plot then add that plot in. Add another widget that allows you to sort the data by season as well as player.
+Try running the app. The app has a gray box on the side with dropdown menus that allows you to select a basketball player and season, and space on the right which is where a plot will go. This design is called `sidebarLayout()`. [Many more flexible layouts are possible](https://shiny.rstudio.com/articles/layout-guide.html) as well, but we won't cover them here.
 
-### Widgets
+### Input options 
 
-### render* functions
+Input is defined through input functions called [widgets](https://shiny.rstudio.com/tutorial/written-tutorial/lesson3/). These are text elements a user can interact with, like scroll bars or buttons. Our app uses `selectInput()` to create a drop-down menu, but many other input functions are available.
+
+<img src="images/widgets.png" style="width:75%">
+
+
+All input functions have `inputId` and `label` as the first two arguments. The `inputId` is a string that the server side will use to access the value of the user input. For example, if `inputId = "slider_widget"` then on the server side you would use `input$slider_widget` to use its value.`label` is the title for the widget that will show up in the ui.
+
+**Exercise**: Try adding another widget to the sidebar.
+
+### Output options and Render statments
+
+Output options go in the `ui.R` file. The first argument of all output functions is "outputId", which is used to identify each output and therefore must be unique for each output. Examples include `plotOutput()`, `textOutput()`, `tableOutput()`.
+
+**Debugging tip**: Make sure you have a comma between each input call and output call! Commas are needed between elements for the `ui` but not for the `server`.
+
+Render statements go in the `server.R` file. They take user input from the widgets and execute a function. Examples including `renderTable()` to make tables, `renderText()` for text, and `renderPlot()` for certain plots (*works with plots made using base* `R` *or* `ggplot2` *but for plots made using* `plotly` *use* `renderPlotly()`). 
+
+Render statements are actually part of a larger and more flexible class of server-side functions called **reactive expressions** but we cover those later.
+
+Run your `shiny_nba` app with the code below added. 
+
+```{r, eval = FALSE}
+##### place in mainPanel of ui.R under plotOutput
+textOutput("player_text"),
+
+# html tag
+hr()
+
+##### place in shinyServer of server.R
+output$player_text<- renderText({ 
+  paste0("The player you have chosen is ", input$player_choice)
+})
+
+```
+
+The `renderPrint()` statement prints out the current selection from the player drop down menu. The `hr()` bit is a wrapper for the html tag `<hr>` and creates a horizontal line. There are a bunch of [awesome html wrapper functions](https://shiny.rstudio.com/articles/tag-glossary.html) to help you customize your user interface.
+
+**Debugging tip**: Make sure you have a comma between each render call. 
+**Exercise: add another html tag to your UI**
 
 ### Court plot
 
+Let's add a plot. We are going to plot the locations of all the attempted shots made by the selected NBA star. Add the following to your `server.R`. (**update wherever else you need to also, and mention it here! Also mention what help functions were used to create this plot. Maybe create plot in another function?)
+
+```{r eval = FALSE}
+
+```
+
+
+**Debugging tip**: if the non-Shiny version of your plot isn't working, your Shiny version won't either! Make sure to test complicated code before placing it in the Shiny framework.
 
 
 
@@ -124,9 +171,10 @@ but I'm not going to focus on it right now.
 * build ggplot object that shows cour data for the subject. Place ggplot object into the shiny framework and edit it to show how you incorporate it into shiny. Make sure it runs first!
 * add basketball icon to tab of this thing
 
-## get fancier with tabs
+### Adding a tab
 
-## plotly and shiny
+
+### Plotly
 
 ## reactive vs. observer stuff
 

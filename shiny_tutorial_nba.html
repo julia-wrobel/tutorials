@@ -327,11 +327,12 @@ div.tocify {
 </ul>
 <div id="getting-started" class="section level2">
 <h2>Getting started</h2>
-<p>Before we begin, make sure you have the <code>shiny</code>, <code>plotly</code>, and the <code>tidyverse</code> packages.</p>
+<p>Before we begin, make sure you have the <code>shiny</code>, <code>plotly</code>, and <code>tidyverse</code> packages installed.</p>
 <pre class="r"><code>install.packages(c(&quot;shiny&quot;, &quot;plotly&quot;, &quot;tidyverse&quot;))</code></pre>
 <p>Run an example of a simple shiny app to ensure the package is installed properly.</p>
 <pre class="r"><code>library(shiny)
 runExample(&quot;01_hello&quot;)</code></pre>
+<p>A slider bar the allows you to change the number bins in the histogram shown.</p>
 </div>
 <div id="shiny-basics" class="section level2">
 <h2>Shiny basics</h2>
@@ -343,22 +344,21 @@ runExample(&quot;01_hello&quot;)</code></pre>
 </p>
 </body>
 </div>
-<div id="create-shiny-framework" class="section level2">
-<h2>Create shiny framework</h2>
-<p>shin</p>
-<p>All Shiny apps have the sample template.</p>
+<div id="the-shiny-framework" class="section level2">
+<h2>The shiny framework</h2>
+<p>All Shiny apps follow the same overall structure. <code>fluidPage()</code> controls the page layout for the ui. We define <code>server</code> as a function with arguments <code>input</code> and <code>output</code>.</p>
 <pre class="r"><code>library(shiny)
 ui &lt;- fluidPage()
 server &lt;- function(input, output) {}
 shinyApp(ui = ui, server = server)</code></pre>
-<p>This template itself is a minimal Shiny app, try running the code. Copy this template into a new file called <code>app.R</code>, and save it in a new folder. After saving the file, you should see a <em>Run App</em> button at the top, indicating RStudio has recognized the file as a Shiny app</p>
+<p>This template itself is a minimal Shiny app, try running the code. Copy this template into a new file called <code>app.R</code>, and save it in a new folder. After saving the file, you should see a <em>Run App</em> button at the top, indicating RStudio has recognized the file as a Shiny app.</p>
 <p><img src="images/empty_app.png" style="width:100%"></p>
 <p>Two ways to create Shiny apps:</p>
 <ol style="list-style-type: decimal">
 <li>Put both <code>ui</code> and <code>server</code> code into single file called <code>app.R</code>, ideal for simple apps. If you are using a single file, the file <strong>must</strong> be called <code>app.R</code> for the app to run.</li>
 <li>Create separate <code>ui.R</code> and <code>server.R</code> files, ideal for more complicated apps.</li>
 </ol>
-<p>We will use the second approach for this tutorial. This is the preferable way to write apps unless your app is super simple, and you can initialize a Shiny app right from RStudio:</p>
+<p>We will use the second approach for this tutorial. This is the preferable way to write apps unless your app is super simple. You can initialize a Shiny app using either approach right from RStudio:</p>
 <p><img src="images/initiate_app1.png" style="width:100%"></p>
 <p>Select <strong>Shiny Web App…</strong> and the following will pop up:</p>
 <p><img src="images/initiate_app2.png" style="width:100%"></p>
@@ -376,17 +376,41 @@ shinyApp(ui = ui, server = server)</code></pre>
 <li>a <code>ui.R</code> file</li>
 <li>a <code>server.R</code> file</li>
 <li>a <code>nba_shots.RData</code> data object which contains the data for our app</li>
-<li>a <code>helper.R</code> file with contains functions sourced by our app</li>
+<li>a <code>helper.R</code> file with extra <code>R</code> code our app uses</li>
 </ul>
-<p>Try running the app. App has simple structure, allows you to select a new player, doesn’t make any plots yet. Has one widget. Show/explain where data is , how you’re calling it, what helper functions are doing. put in code to build a plot then add that plot in. Add another widget that allows you to sort the data by season as well as player.</p>
-<div id="widgets" class="section level3">
-<h3>Widgets</h3>
+<p>Try running the app. The app has a gray box on the side with dropdown menus that allows you to select a basketball player and season, and space on the right which is where a plot will go. This design is called <code>sidebarLayout()</code>. <a href="https://shiny.rstudio.com/articles/layout-guide.html">Many more flexible layouts are possible</a> as well, but we won’t cover them here.</p>
+<div id="input-options" class="section level3">
+<h3>Input options</h3>
+<p>Input is defined through input functions called <a href="https://shiny.rstudio.com/tutorial/written-tutorial/lesson3/">widgets</a>. These are text elements a user can interact with, like scroll bars or buttons. Our app uses <code>selectInput()</code> to create a drop-down menu, but many other input functions are available.</p>
+<p><img src="images/widgets.png" style="width:75%"></p>
+<p>All input functions have <code>inputId</code> and <code>label</code> as the first two arguments. The <code>inputId</code> is a string that the server side will use to access the value of the user input. For example, if <code>inputId = &quot;slider_widget&quot;</code> then on the server side you would use <code>input$slider_widget</code> to use its value.<code>label</code> is the title for the widget that will show up in the ui.</p>
+<p><strong>Exercise</strong>: Try adding another widget to the sidebar.</p>
 </div>
-<div id="render-functions" class="section level3">
-<h3>render* functions</h3>
+<div id="output-options-and-render-statments" class="section level3">
+<h3>Output options and Render statments</h3>
+<p>Output options go in the <code>ui.R</code> file. The first argument of all output functions is “outputId”, which is used to identify each output and therefore must be unique for each output. Examples include <code>plotOutput()</code>, <code>textOutput()</code>, <code>tableOutput()</code>.</p>
+<p><strong>Debugging tip</strong>: Make sure you have a comma between each input call and output call! Commas are needed between elements for the <code>ui</code> but not for the <code>server</code>.</p>
+<p>Render statements go in the <code>server.R</code> file. They take user input from the widgets and execute a function. Examples including <code>renderTable()</code> to make tables, <code>renderText()</code> for text, and <code>renderPlot()</code> for certain plots (<em>works with plots made using base</em> <code>R</code> <em>or</em> <code>ggplot2</code> <em>but for plots made using</em> <code>plotly</code> <em>use</em> <code>renderPlotly()</code>).</p>
+<p>Render statements are actually part of a larger and more flexible class of server-side functions called <strong>reactive expressions</strong> but we cover those later.</p>
+<p>Run your <code>shiny_nba</code> app with the code below added.</p>
+<pre class="r"><code>##### place in mainPanel of ui.R under plotOutput
+textOutput(&quot;player_text&quot;),
+
+# html tag
+hr()
+
+##### place in shinyServer of server.R
+output$player_text&lt;- renderText({ 
+  paste0(&quot;The player you have chosen is &quot;, input$player_choice)
+})
+</code></pre>
+<p>The <code>renderPrint()</code> statement prints out the current selection from the player drop down menu. The <code>hr()</code> bit is a wrapper for the html tag <code>&lt;hr&gt;</code> and creates a horizontal line. There are a bunch of <a href="https://shiny.rstudio.com/articles/tag-glossary.html">awesome html wrapper functions</a> to help you customize your user interface.</p>
+<p><strong>Debugging tip</strong>: Make sure you have a comma between each render call. <strong>Exercise: add another html tag to your UI</strong></p>
 </div>
 <div id="court-plot" class="section level3">
 <h3>Court plot</h3>
+<p>Let’s add a plot. We are going to plot the locations of all the attempted shots made by the selected NBA star. Add the following to your <code>server.R</code>. (**update wherever else you need to also, and mention it here! Also mention what help functions were used to create this plot. Maybe create plot in another function?)</p>
+<p><strong>Debugging tip</strong>: if the non-Shiny version of your plot isn’t working, your Shiny version won’t either! Make sure to test complicated code before placing it in the Shiny framework.</p>
 <p>flow:</p>
 <ul>
 <li>open new folder with nba app using that R project</li>
@@ -400,12 +424,12 @@ shinyApp(ui = ui, server = server)</code></pre>
 <li>add basketball icon to tab of this thing</li>
 </ul>
 </div>
+<div id="adding-a-tab" class="section level3">
+<h3>Adding a tab</h3>
 </div>
-<div id="get-fancier-with-tabs" class="section level2">
-<h2>get fancier with tabs</h2>
+<div id="plotly" class="section level3">
+<h3>Plotly</h3>
 </div>
-<div id="plotly-and-shiny" class="section level2">
-<h2>plotly and shiny</h2>
 </div>
 <div id="reactive-vs.observer-stuff" class="section level2">
 <h2>reactive vs. observer stuff</h2>
