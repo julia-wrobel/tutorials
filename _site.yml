@@ -3,6 +3,8 @@ output_dir: '.'
 navbar:
   title: Tutorials
   right:
+  - text: Home
+    href: http://juliawrobel.com
   - icon: fa-envelope fa-lg
     href: mailto:<jw3134@cumc.columbia.edu>
   - icon: fa-github fa-lg
