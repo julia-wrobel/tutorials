@@ -8,25 +8,27 @@ output:
   
 This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks again to the NBA New York office for agreeing to host!!
 
-Shiny is RStudio's framework introduced in 2012 for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). For inspiration and guidance I drew on Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration and info on how to scrape the data. I highly recommend checking it out!
+Shiny is RStudio's framework introduced in 2012 for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration and guidance on how to scrape the data. I highly recommend checking it out!
 
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
 collapse = TRUE,
+warning = FALSE,
 fig.width = 6,
 fig.asp = .6,
 out.width = "90%"
 )
+
 ```
 
 
 ## Getting started
 
-Before we begin, make sure you have the `shiny`, `plotly`, and  `tidyverse` packages installed. I have created a template for our app, please [download](Downloads/shiny_nba.zip) and unzip this as well.
+Before we begin, make sure you have the `shiny`, `plotly`, `tidyverse`, and `rsconnect` packages installed. I have created a template for our app, please [download](Downloads/shiny_nba.zip) and unzip this as well.
 
 ```{r, eval = FALSE}
-install.packages(c("shiny", "plotly", "tidyverse"))
+install.packages(c("shiny", "plotly", "tidyverse", "rsconnect"))
 ```
 
 Run an example of a simple shiny app to ensure the package is installed properly. 
@@ -49,7 +51,7 @@ Each Shiny app has a `ui` and a `server` file, both of which we have to define. 
 
 ### The shiny framework
 
-All Shiny apps follow the same overall structure. `fluidPage()` controls the page layout for the ui. We define `server` as a function with arguments `input` and `output`.
+All Shiny apps follow the same overall structure. `fluidPage()` controls the page layout for the UI. We define `server` as a function with arguments `input` and `output`.
 
 ```{r shiny_template, eval = FALSE}
 library(shiny)
@@ -69,11 +71,11 @@ Two ways to create Shiny apps:
 
 We will use the second approach for this tutorial. This is the preferable way to write apps unless your app is super simple. You can initialize a Shiny app using either approach right from RStudio:
 
-<img src="images/initiate_app1.png" style="width:100%">
+<img src="images/initiate_app1.png" style="width:80%">
 
 Select **Shiny Web App...** and the following will pop up:
 
-<img src="images/initiate_app2.png" style="width:100%">
+<img src="images/initiate_app2.png" style="width:80%">
 
 Select **Multiple File** to generate an app with separate `ui.R` and `server.R` files. I called my app "new_app" and stored it in a folder on my Desktop. To run the app you can do either of the following:
 
@@ -82,16 +84,17 @@ Select **Multiple File** to generate an app with separate `ui.R` and `server.R` 
 
 This is intended to show how a Shiny app can be initialized. For the rest of the tutorial we will be working with the `shiny_nba` file I provided.
 
-## Shiny NBA
+## NBA Shots App
 
-If you haven't already, download and unzip the [shiny_nba](Downloads/shiny_nba.zip) folder provided. Open the .Rproj in the folder - this will open up RStudio and automatically set your working directory to this folder. Notice what's in the folder:
+Download and unzip the [shiny_nba](Downloads/shiny_nba.zip) folder provided. Notice what's in the folder:
 
+* a `shiny_nba.Rproj`
 * a `ui.R` file
 * a `server.R` file
-* a `nba_shots.RData` data object which contains the data for our app
-* a `helper.R` file with extra `R` code our app uses
+* a `nba_shots.RData` object that contains the data on shots taken by LeBron James, Kevin Durant, Russell Westbrook, Stephen Curry, and Carmelo Anthony scraped from the [NBA stats API](http://stats.nba.com/)
+* a `helper.R` file with functions `R` code our app uses
 
-Try running the app. The app has a gray box on the side with dropdown menus that allows you to select a basketball player and season, and space on the right which is where a plot will go. This design is called `sidebarLayout()`. [Many more flexible layouts are possible](https://shiny.rstudio.com/articles/layout-guide.html) as well, but we won't cover them here.
+Open the [shiny_nba.Rproj](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) to open up RStudio and automatically set your working directory to this folder. Run the app by typing `runApp()` into your console. The app has a gray box on the side with dropdown menus that allows you to select a basketball player and season, and space on the right which is where plots will go. This design is called `sidebarLayout()`. [Many more flexible layouts are possible](https://shiny.rstudio.com/articles/layout-guide.html) as well, but we won't cover them here.
 
 ### Input options 
 
@@ -100,19 +103,21 @@ Input is defined through input functions called [widgets](https://shiny.rstudio.
 <img src="images/widgets.png" style="width:75%">
 
 
-All input functions have `inputId` and `label` as the first two arguments. The `inputId` is a string that the server side will use to access the value of the user input. For example, if `inputId = "slider_widget"` then on the server side you would use `input$slider_widget` to use its value.`label` is the title for the widget that will show up in the ui.
+All input functions have `inputId` and `label` as the first two arguments. The `inputId` is a string that the server side will use to access the value of the user input. For example, if `inputId = "slider_widget"` then on the server side you would use `input$slider_widget` to use its value.`label` is the title for the widget that will show up in the UI.
 
 **Exercise**: Try adding another widget to the sidebar.
 
-### Output options and render statements
+### Output options 
 
 Output options go in the `ui.R` file. The first argument of all output functions is "outputId", which is used to identify each output and therefore must be unique for each output. Examples include `plotOutput()`, `textOutput()`, `tableOutput()`.
 
-**Debugging tip**: Make sure you have a comma between each input call and output call! Commas are needed between elements for the `ui` but not for the `server`.
+**Debugging tip**: Make sure you have a comma between each input call and output call! Commas are needed between elements for the UI but not for the server, which operates more like regular `R` code.
 
-Render statements go in the `server.R` file. They take user input from the widgets and execute a function. Examples including `renderTable()` to make tables, `renderText()` for text, and `renderPlot()` for certain plots (*works with plots made using base* `R` *or* `ggplot2` *but for plots made using* `plotly` *use* `renderPlotly()`). 
+### render* statements
 
-Render statements are actually part of a larger and more flexible class of server-side functions called **reactive expressions** but we cover those later.
+Render statements go in the `server.R` file. They take user input from the widgets and build reactive output to display in the UI. Examples including `renderTable()` to make tables, `renderText()` for text, and `renderPlot()` for certain plots (*works with plots made using base* `R` *or* `ggplot2` *but for plots made using* `plotly` *use* `renderPlotly()`). 
+
+Input, output, and render statements are the simplest examples of Shiny's **reactive programming** which we will cover in more detail later.
 
 Run your `shiny_nba` app with the code below added. 
 
@@ -130,53 +135,166 @@ output$player_text<- renderText({
 
 ```
 
-The `renderPrint()` statement prints out the current selection from the player drop down menu. The `hr()` bit is a wrapper for the html tag `<hr>` and creates a horizontal line. There are a bunch of [awesome html wrapper functions](https://shiny.rstudio.com/articles/tag-glossary.html) to help you customize your user interface.
+The `renderText()` statement accesses the current player selection via the `input$player_choice` call. The `hr()` bit is a wrapper for the html tag `<hr>` which creates a horizontal line. There are a bunch of [awesome html wrapper functions](https://shiny.rstudio.com/articles/tag-glossary.html) to help you customize your user interface.
 
-**Debugging tip**: Make sure you have a comma between each render call. 
-**Exercise: add another html tag to your UI**
+**Exercise: add another html tag to your UI.**
 
 ### Court plot
 
-Let's add a plot. We are going to plot the locations of all the attempted shots made by the selected NBA star. Add the following to your `server.R`. (**update wherever else you need to also, and mention it here! Also mention what help functions were used to create this plot. Maybe create plot in another function?)
+Next let's add a plot. We are going to plot the locations of the attempted shots made by the selected NBA star in a given season, like LeBron James in his rookie 2003-2004 season (below). 
 
-```{r eval = FALSE}
+```{r court_plot, eval = TRUE, echo = FALSE, message = FALSE}
+library(plotly)
+library(tidyverse)
+load("Downloads/shiny_nba/nba_shots.RData")
+source("Downloads/shiny_nba/helpers.R")
 
+player_data = filter(nba_shots, player_name == "LeBron James", season == "2003-04")
+gg_court = make_court()
+
+gg_court + geom_point(data = player_data, alpha = 0.74, size = 2.5,
+                          aes(loc_x, loc_y, color = shot_made_flag)) +
+  scale_color_manual("", values = c(made = "blue", missed = "orange"))
 ```
 
+First remove the `textOutput` and `renderText` calls we added before -- these were just to get a sense of what Shiny is doing. Next add the code below to the server file of your `shiny_nba` app to include the court shots plot.
 
-**Debugging tip**: if the non-Shiny version of your plot isn't working, your Shiny version won't either! Make sure to test complicated code before placing it in the Shiny framework.
+```{r, eval = FALSE}
+##### server.R
+  output$court_shots <- renderPlot({
+    # subset data by selected player and season(s)
+    player_data = filter(nba_shots, player_name == input$player_choice, 
+                         season %in% input$season_choice)
+    
+    # create plot
+    gg_court + geom_point(data = player_data, alpha = 0.75, size = 2.5,
+                          aes(loc_x, loc_y, color = shot_made_flag, shape = season)) +
+      scale_color_manual("", values = c(made = "blue", missed = "orange"))
+  })
+```
 
+**Debugging tip**: if the non-Shiny version of your plot isn't working, your Shiny version won't either! Make sure to test your code before placing it in the Shiny framework.
 
-
-flow:
-
-* open new folder with nba app using that R project
-* run app to show what it looks like (should be empty frame)
-* add one tab, use this to mention that you can make the layout complicated with different ways to lay it out and lots of tabs. Links to resources for this at the bottom,
-but I'm not going to focus on it right now.
-* talk about widgets
-* put data in the right place
-* load libraries in the right place
-* build widget to access datanames, show what turns up in different scenarios
-* build ggplot object that shows cour data for the subject. Place ggplot object into the shiny framework and edit it to show how you incorporate it into shiny. Make sure it runs first!
-* add basketball icon to tab of this thing
-
-### Adding a tab
-
+The lines of the basketball court, `gg_court`, are a ggplot layer created by a function in the `helpers.R` file.
 
 ### Plotly
 
-## reactive vs. observer stuff
+We will add another plot using `Plotly`, which is a framework for creating interative graphics that has a variety of implementations, including in `R`. 
 
-## Debugging shiny
+`Plotly` is another framework for creating interative graphics with some nice benefits:
 
-## Deploying your app
+* High quality plots produced with a few lines of code
+* (unlike in Shiny) its interactivity does not require running a server, this means plots can be placed in Rmarkdown documents that are hosted on GitHub (like this tutorial)!
+* Can be placed in Shiny apps
 
-## Resources
+We can make a well-labeled box plot of shooting distances for our NBA players with just two lines of code. Notice that you can hover, zoom, unclick players, and download the image.
+
+```{r, fig.width = 10, fig.asp = .4}
+nba_shots %>% 
+  plot_ly(y = ~shot_distance, color = ~player_name, type = "box") %>% 
+  layout(legend = list(x = 0.2, y = 1.0))
+```
+
+**Note**: There is also a Plotly wrapper, `ggplotly`, for ggplot2 objects. The code below makes the same boxplot using `ggplot()` then translates it to Plotly. This can be useful for making quick Plotly plots when exploring your data if you're more used to ggplot syntax. From my experience the `plot_ly()` functions works better than the `ggplotly()` function within Shiny, so most of the time I would recommend using the `plot_ly` function or just sticking with `ggplot()` if you don't need the extra interactivity. I tend to use the `ggplotly() wrapper to quickly identify outliers when doing exploratory analysis on a new dataset.
+
+```{r eval = TRUE, message = FALSE}
+nba_boxplot = nba_shots %>%
+  ggplot(aes(player_name, shot_distance, fill = player_name)) + geom_boxplot() +
+  theme(legend.position = "none")
+
+ggplotly(nba_boxplot)
+```
+
+<br>
+
+Let's add the Plotly boxplot to the `shiny_nba` app using the code snippets below. Let's also allow the user to filter on whether shots were made or missed by adding the `radioButtons` widget.
+
+```{r, eval = FALSE}
+# ui.R sidebar panel
+radioButtons("shots_made", label = h3("Shot status"), choices = list("all", "made", "missed"))
+
+# ui.R main panel
+plotlyOutput("shot_distances")
+
+# server.R  
+output$shot_distances <- renderPlotly({
+  nba_shots %>%
+    filter(if(input$shots_made != 'all')  (shot_made_flag == input$shots_made) else TRUE) %>%
+    plot_ly(y = ~shot_distance, color = ~player_name, type = "box") %>%
+    layout(showlegend = FALSE)
+})
+
+```
+
+The [Plotly Shiny gallery](https://plot.ly/r/shiny-gallery/) contains many cool examples of what's possible within this framework. 
+
+**Exercise: try editing the app so that the court shots plot also changes based on the radio button input.**
+
+
+## Getting fancier
+
+Now you have a cool Shiny app! I'm want to discuss a few extra things you can do with Shiny. I've included an expanded version of the app shiny_nba app. Download it [here](Downloads/shiny_nba_complete.zip), then open the `shiny_nba_complete.Rproj` and run the app. The app has a few updates:
+
+* Tabbed layout, with one plot on each tab
+* A new plot on the third tab
+* A reactive expression in `server.R`.
+* Event-driven expressions implemented in the fourth tab (**not yet**)
+
+### Reactivity
+
+[Shiny uses reactive programming](https://shiny.rstudio.com/articles/reactivity-overview.html), which is what allows output to update based on user input. There are three types of reactive objects in Shiny: reactive sources, reactive conducters, and reactive endpoints:
+
+<img src="images/reactive_objects.png" style="width:75%">
+
+In what we have done so far, `input$` statements are the reactive sources and `output$` statements are the reactive endpoints. We haven't used any reactive conducters. From our simple `shiny_nba` app:
+
+<img src="images/simple_reactivity.png" style="width:50%">
+
+However, sometimes Shiny apps require slow computation, and if one source has multiple endpoints then these computations will need to be done several times. Reactive conducters can speed this up. [Reactive expressions](https://shiny.rstudio.com/tutorial/written-tutorial/lesson6/) are an implementation of reactive conducters that take an `input$` value, do some operation, and _cache_ the results. The code `our_expression = reactive({})` creates a reactive expression called `our_expression`. Since reactive expressions are actually functions, we call the reactive expression using parenthesis: `our_expression()`.
+
+The fancier `shiny_nba_complete` app uses a reactive expression to store a data set that has been filtered on the current value of `input$player_name`. In the code below, from `server.R` of this app, a dataframe called `player_data` is defined using a reactive expression, then accessed by the reactive endpoint `output$court_shots` by calling `player_data()`.
+
+```{r, eval = FALSE}
+  # subset data by selected player using reactive expression
+  player_data = reactive({
+    filter(nba_shots, player_name == input$player_choice)
+  })
+  
+  # create court_shots plot
+  output$court_shots <- renderPlot({
+    gg_court + geom_point(data = filter(player_data(), season %in% input$season_choice),
+                          alpha = 0.75, size = 2.5,
+                          aes(loc_x, loc_y, color = shot_made_flag, shape = season)) +
+      scale_color_manual("", values = c(made = "blue", missed = "orange"))
+  })
+```
+
+
+Since both `output$court_shots` and `output$court_position` use this data, we save ourselves from doing the computation twice. The reactive diagram for this app is:
+  
+  
+* observe
+* event-driven expressions
+
+### event-driven expressions
+
+
+### Deploying your app
+
+While we've already run our app locally, hosting it publicly can be more tricky. You can't just host it on GitHub like you would an [R Markdown or blogdown website](http://www.emilyzabor.com/tutorials/rmarkdown_websites_tutorial.html) because `R` needs to be running in the background. However, you can publicly host shiny apps at [Shinyapps.io](https://shiny.rstudio.com/articles/shinyapps.html)
+
+The `rsconnect` package deploys Shiny apps to shinyapps.io. Load this package and create your own account at [shinyapps.io](https://www.shinyapps.io/).
+
+```{r}
+library(rsconnect)
+```
+
+
+## Additional resources
 
 * [Embedding Shiny in Rmarkdown documents](https://rmarkdown.rstudio.com/authoring_shiny.html)
-
 * ["Case Studies in Shiny": Dean Attali's short course at DataCamp](https://www.datacamp.com/courses/building-web-applications-in-r-with-shiny-case-studies)
-
 * [Gallery of user-submitted Shiny apps](http://www.showmeshiny.com/)
 * [Shiny cheatsheet](http://shiny.rstudio.com/images/shiny-cheatsheet.pdf)
+* [Eliminate warnings produced by Plotly with Shiny](https://github.com/ropensci/plotly/issues/985)
+
