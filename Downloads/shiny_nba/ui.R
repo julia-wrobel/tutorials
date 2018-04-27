@@ -2,13 +2,11 @@
 # This is the user-interface definition of a Shiny web application. You can
 # run the application by clicking 'Run App' above.
 #
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
 
+# load libraries and data
 library(shiny)
 library(tidyverse)
+load("nba_shots.RData")
 
 # data management
 players = nba_shots %>% distinct(player_name) %>% pull()
@@ -29,13 +27,19 @@ shinyUI(fluidPage(
       
       # drop down menu for season based on a certain player
       uiOutput("season_choice")
-    
+      
+      #radioButtons("shots_made", label = h3("Shot status"), choices = list("all", "made", "missed"))
+      
     ),
     
     # Show output based on user selections
     mainPanel(
       # spatial plot of shots made
       plotOutput("court_shots")
+      
+      # ui.R main panel
+      # plotlyOutput("shot_distances")
+      
     )
   )
 ))

@@ -6,9 +6,9 @@ output:
     toc_float: true
 ---
   
-This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks again to the NBA New York office for agreeing to host!!
+This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks to the NBA New York office for agreeing to host!!
 
-Shiny is RStudio's framework introduced in 2012 for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration and guidance on how to scrape the data. I highly recommend checking it out!
+Shiny is R Studio's framework introduced in 2012 for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration and guidance on how to scrape the data. I highly recommend checking it out!
 
 
 ```{r, echo = FALSE}
@@ -88,7 +88,7 @@ This is intended to show how a Shiny app can be initialized. For the rest of the
 
 Download and unzip the [shiny_nba](Downloads/shiny_nba.zip) folder provided. Notice what's in the folder:
 
-* a `shiny_nba.Rproj`
+* an R project called `shiny_nba.Rproj`
 * a `ui.R` file
 * a `server.R` file
 * a `nba_shots.RData` object that contains the data on shots taken by LeBron James, Kevin Durant, Russell Westbrook, Stephen Curry, and Carmelo Anthony scraped from the [NBA stats API](http://stats.nba.com/)
@@ -102,9 +102,9 @@ Input is defined through input functions called [widgets](https://shiny.rstudio.
 
 <img src="images/widgets.png" style="width:75%">
 
-
 All input functions have `inputId` and `label` as the first two arguments. The `inputId` is a string that the server side will use to access the value of the user input. For example, if `inputId = "slider_widget"` then on the server side you would use `input$slider_widget` to use its value.`label` is the title for the widget that will show up in the UI.
 
+Add the code highlighted in the screen shot to the `ui.R` file t
 **Exercise**: Try adding another widget to the sidebar.
 
 ### Output options 
