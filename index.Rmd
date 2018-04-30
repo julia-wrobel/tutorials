@@ -2,11 +2,10 @@
 title: "Tutorials"
 ---
 
-I love sharing new statistical programming tricks! To that end, I co-founded the [Columbia biostatistics computing club](http://www.rladiesnyc.org//) in January 2017 with Ariel Chernofsky. Below are links to my recent tutorials.
+I love sharing new statistical programming tricks! To that end, I co-founded the [Columbia biostatistics computing club](https://columbia-computing-club.github.io/) in January 2017 with Ariel Chernofsky. Below are links to my recent tutorials.
 
 * [Introduction to Shiny with NBA data](shiny_tutorial_nba.html): 
-    * 05/08/2018, For [R Ladies NYC](https://columbia-computing-club.github.io/) at NBA's New York office
-
+    * 05/08/2018, For [R Ladies NYC](http://www.rladiesnyc.org/) at NBA's New York office
 
 * [Using the OSX terminal](osx_terminal.html): 
     * 11/13/2017, [Columbia biostatistics computing club](https://columbia-computing-club.github.io/)
