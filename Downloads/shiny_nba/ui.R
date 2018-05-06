@@ -21,23 +21,26 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      # drop down menu for player
-      selectInput("player_choice", label = h3("Select player"),
-                  choices = players, selected = "LeBron James"),
       
-      # drop down menu for season based on a certain player
-      uiOutput("season_choice")
       
-      #radioButtons("shots_made", label = h3("Shot status"), choices = list("all", "made", "missed"))
+      # # drop down menu for player
+      # selectInput("player_choice", label = h2("Select player"),
+      #             choices = players, selected = "LeBron James") #, # uncomment comma to add another widget
+      # 
+      # # drop down menu for season based on a certain player
+      # uiOutput("season_choice") #,
+      # 
+      # radioButtons("shots_made", label = h3("Shot status"), choices = list("all", "made", "missed"))
       
     ),
     
     # Show output based on user selections
     mainPanel(
-      # spatial plot of shots made
-      plotOutput("court_shots")
       
-      # ui.R main panel
+      # # spatial plot of shots made
+      # plotOutput("court_shots") #,
+      # 
+      # # box plot of shot distances
       # plotlyOutput("shot_distances")
       
     )
