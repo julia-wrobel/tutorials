@@ -41,10 +41,10 @@ shinyUI(fluidPage(
     mainPanel(
       
       tabsetPanel(type = "tabs",
-                  tabPanel("Spatial display", plotOutput("court_shots")),
-                  tabPanel("Basket distance",  plotlyOutput("shot_distances")),
-                  tabPanel("Court position", plotOutput("court_position")),
-                  tabPanel("Time remaining", 
+                  tabPanel(h4("Spatial display"), plotOutput("court_shots")),
+                  tabPanel(h4("Basket distance"),  plotlyOutput("shot_distances")),
+                  tabPanel(h4("Court position"), plotOutput("court_position")),
+                  tabPanel(h4("Time remaining"), 
                            plotlyOutput("coupled1"),
                            plotOutput("coupled2")
                            ))

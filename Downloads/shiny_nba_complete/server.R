@@ -77,6 +77,11 @@ shinyServer(function(input, output) {
       # add plot
       plot_ly(mode = "markers", type = "scatter", showlegend = FALSE,
               source = "time_plot", key = ~shot_id) %>% 
+      layout(
+        xaxis = list(title = "distance from basket (feet)"),
+        yaxis = list(title = "time remaining (minutes)"),
+        dragmode = "select"
+      ) %>%
       add_trace(x = ~shot_distance, y = ~ time_remaining,  
                 marker = list(
                   color = 'rgba(245, 137, 15, 0.1)',
@@ -89,11 +94,6 @@ shinyServer(function(input, output) {
       add_segments(x = 0, xend = 100, y = 24, yend = 24) %>%
       add_segments(x = 0, xend = 100, y = 36, yend = 36) %>%
       add_segments(x = 0, xend = 100, y = 48, yend = 48) %>%
-      layout(
-        xaxis = list(title = "distance from basket (feet)"),
-        yaxis = list(title = "time remaining (minutes)"),
-        dragmode = "select"
-      ) %>%
       add_annotations(x = c(80, 80, 80, 80),
                       y = c(12, 24, 36, 48),
                       text = c("quarter 4 start", "quarter 3 start", "quarter 2 start", "game start"))
