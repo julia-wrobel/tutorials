@@ -183,7 +183,7 @@ plot_ly(data = nba_shots, y = ~shot_distance, color = ~player_name, type = "box"
   layout(legend = list(x = 0.2, y = 1.0))
 ```
 
-**Note**: There is also a Plotly wrapper, `ggplotly`, for ggplot2 objects. The code below makes a box plot using `ggplot()` then translates it to Plotly. This can be useful for making quick plots if you want Plotly functionality but you're more used to ggplot2 syntax. From my experience the `plot_ly()` function works better than the `ggplotly()` function, so I would usually recommend using the `plot_ly` function or just sticking with `ggplot()` if you don't need the extra interactivity. I do use `ggplotly() to quickly identify outliers when doing exploratory analysis on a new dataset.
+**Note**: There is also a Plotly wrapper, `ggplotly`, for ggplot2 objects. The code below makes a box plot using `ggplot()` then translates it to Plotly. This can be useful for making quick plots if you want Plotly functionality but you're more used to ggplot2 syntax. From my experience the `plot_ly()` function works better than the `ggplotly()` function, so I would usually recommend using the `plot_ly` function or just sticking with `ggplot()` if you don't need the extra interactivity. I do use `ggplotly()` to quickly identify outliers when doing exploratory analysis on a new dataset.
 
 ```{r, eval = TRUE, message = FALSE}
 nba_boxplot = nba_shots %>%
@@ -194,9 +194,9 @@ nba_boxplot = nba_shots %>%
 ggplotly(nba_boxplot)
 ```
 
-This time I also filtered out missed shots because I was curious how many of the shots taken really far away were actually made. Steph Curry makes the most far shots on average (turns out this is one of his trademarks, which I didn't know being a basketball neophyte) -- but the outliers belong to Lebron!
+This time I also filtered out missed shots because I was curious how many of the shots taken really far away were actually made. Steph Curry makes the most far shots on average (turns out this is one of his trademarks, which I didn't know being a basketball neophyte) -- but the outliers belong to LeBron!
 
-<iframe width="560" height="315" align="center" src="https://www.youtube.com/embed/KdVE-2OuScI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3ZYlgtBlBLE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 In 2007 LeBron made an 82 foot shot in a game against the Celtics, as the buzzer indicated the end of the 3rd quarter.
 
