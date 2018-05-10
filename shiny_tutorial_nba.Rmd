@@ -8,7 +8,7 @@ output:
   
 This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks to the New York NBA office for hosting!!
 
-Shiny is R Studio's framework for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration. I highly recommend checking it out! He also has a [cool comparison](http://toddwschneider.com/posts/taxi-vs-citi-bike-nyc/) of Citi Bike vs. Taxi commuting times in NYC.
+Shiny is R Studio's framework for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using NBA shots data. Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration. I highly recommend checking it out! He also has a [cool comparison](http://toddwschneider.com/posts/taxi-vs-citi-bike-nyc/) of Citi Bike vs. Taxi commuting times in NYC.
 
 
 ```{r, echo = FALSE}
