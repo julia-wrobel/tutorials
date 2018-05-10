@@ -8,7 +8,7 @@ output:
   
 This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks to the New York NBA office for hosting!!
 
-Shiny is R Studio's framework for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration and guidance on how to scrape the data. I highly recommend checking it out! He also has a [cool comparison](http://toddwschneider.com/posts/taxi-vs-citi-bike-nyc/) of Citi Bike vs. Taxi commuting times in NYC.
+Shiny is R Studio's framework for building interactive plots and web applications in `R`. By the end of this tutorial you should have some basic understanding of how Shiny works, and will make and deploy a Shiny app using data pulled from the [NBA stats API](http://stats.nba.com/). Thanks to [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr) inspiration. I highly recommend checking it out! He also has a [cool comparison](http://toddwschneider.com/posts/taxi-vs-citi-bike-nyc/) of Citi Bike vs. Taxi commuting times in NYC.
 
 
 ```{r, echo = FALSE}
@@ -127,7 +127,7 @@ Double click the [shiny_nba.Rproj](https://support.rstudio.com/hc/en-us/articles
 
 ### The data
 
-The `nba_shots` data was scraped from the [NBA stats API](http://stats.nba.com/) and contains 81,383 basketball shots taken by five star NBA players. 
+The `nba_shots` data contains 81,383 basketball shots taken by five star NBA players. 
 
 ```{r, message = FALSE}
 library(tidyverse)
@@ -143,7 +143,7 @@ The data has `r ncol(nba_shots)` variables, including information on shot distan
 
 ### Helper file
 
-The `helper.R` code, as well as the code used to scrape the data, is adapted from [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr). While the code looks complicated, it is just used to draw the lines of a basketball court. The empty basketball court (below) is a ggplot object you can put other ggplot layers on top of.
+The `helper.R` code is adapted from [Todd Schneider's ballR app](https://github.com/toddwschneider/ballr). While the code looks complicated, it is just used to draw the lines of a basketball court. The empty basketball court (below) is a ggplot object you can put other ggplot layers on top of.
 
 ```{r empty_court}
 source("helpers.R")
