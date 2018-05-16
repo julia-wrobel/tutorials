@@ -1,5 +1,9 @@
 ---
 title: "Tutorials"
+output: 
+  html_document:
+    includes:
+       in_header: ga_script.html
 ---
 
 I love sharing new statistical programming tricks! To that end, I co-founded the [Columbia biostatistics computing club](https://columbia-computing-club.github.io/) in January 2017 with Ariel Chernofsky. Below are links to my recent tutorials.

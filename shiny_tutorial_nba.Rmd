@@ -1,9 +1,11 @@
 ---
 title: "Learning Shiny with NBA data"
-output:
-  html_document: 
-    toc: true
-    toc_float: true
+output: 
+  html_document:
+    includes:
+       in_header: ga_script.html
+       toc: true
+       toc_float: true
 ---
   
 This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks to the New York NBA office for hosting!!
