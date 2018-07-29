@@ -6,6 +6,9 @@ output:
        in_header: ga_script.html
 ---
 
+<link rel="stylesheet" href="academicons.css"/>
+<link rel="stylesheet" href="styles.css" type="text/css">
+
 I love sharing new statistical programming tricks! To that end, I co-founded the [Columbia biostatistics computing club](https://columbia-computing-club.github.io/) in January 2017 with Ariel Chernofsky. Below are links to my recent tutorials.
 
 * [Introduction to Shiny with NBA data](shiny_tutorial_nba.html): 

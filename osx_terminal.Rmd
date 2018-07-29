@@ -7,6 +7,9 @@ output:
     in_header: ga_script.html
 ---
 
+<link rel="stylesheet" href="academicons.css"/>
+<link rel="stylesheet" href="styles.css" type="text/css">
+
 This tutorial provides an introduction to the Unix command line. 
 
 ```{r, echo = FALSE}

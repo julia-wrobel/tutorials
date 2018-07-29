@@ -7,6 +7,9 @@ output:
        toc: true
        toc_float: true
 ---
+
+<link rel="stylesheet" href="academicons.css"/>
+<link rel="stylesheet" href="styles.css" type="text/css">
   
 This Shiny tutorial was made for the R Ladies NYC meetup on May 8, 2018. Thanks to the New York NBA office for hosting!!
 
