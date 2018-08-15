@@ -2,7 +2,8 @@ name: Julia Wrobel's Website
 output_dir: '.'
 navbar:
   title: Home
-  type: default
+  text: Home
+  href: http://juliawrobel.com
   left:
   - text: Research
     href: http://juliawrobel.com/research.html
