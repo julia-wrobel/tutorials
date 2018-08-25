@@ -10,7 +10,7 @@ navbar:
   - text: Software
     href: http://juliawrobel.com/software.html
   - text: Tutorials
-    href: http://juliawrobel.com/tutorials/
+    href: tutorials.html
     
   right:
   - icon: fa-envelope fa-lg
