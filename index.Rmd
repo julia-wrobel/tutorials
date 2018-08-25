@@ -11,6 +11,8 @@ output:
 
 I love sharing new statistical programming tricks! To that end, I co-founded the [Columbia biostatistics computing club](https://columbia-computing-club.github.io/) in January 2017 with Ariel Chernofsky. Below are links to my recent tutorials.
 
+<br><img src="images/rladies_nba.png" alt="julia" style="width:75%"><br>
+
 * [Introduction to Shiny with NBA data](shiny_tutorial_nba.html): 
     * 05/08/2018, For [R Ladies NYC](http://www.rladiesnyc.org/) at NBA's New York office
 
