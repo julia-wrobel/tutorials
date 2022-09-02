@@ -10,20 +10,27 @@ output:
 <link rel="stylesheet" href="styles.css" type="text/css">
 
 
-### Biostatistics Ph.D. student, Columbia University Mailman School of Public Health
+### Assistant Professor of Biostatistics, Colorado School of Public Health
 
-<br><img src="images/julia3.jpg" alt="julia" style="width:25%"><br>
+<br><img src="images/headshot2.png" alt="julia" style="width:30%"><br>
 
-I obtained my B.A. in chemistry from [Swarthmore College](http://www.swarthmore.edu/) in 2010. I am pursuing a Ph.D. in biostatistics from Columbia University, advised by [Jeff Goldsmith](http://jeffgoldsmith.com/). My research focuses on methods for analyzing and visualizing functional data, with recent applications in physical activity and structural MRI. 
+
+I am an Assistant Professor in the [Department of Biostatistics and Informatics](https://coloradosph.cuanschutz.edu/education/departments/biostatistics-informatics/academics) at the [Colorado School of Public Health](https://coloradosph.cuanschutz.edu/), Director of the CU certificate in [Health Analytics and Data Science](https://coloradosph.cuanschutz.edu/education/degrees-and-programs/certificates/certificate-in-health-analytics-and-data-science#ac-optional-specialty-electives-3), and an Associate Editor for [Reproducibility](https://jasa-acs.github.io/repro-guide/) at the [Journal of the American Statistical Association](https://www.tandfonline.com/toc/uasa20/current). 
+
+I obtained a BA in chemistry from [Swarthmore College](http://www.swarthmore.edu/) in 2010 and a PhD in biostatistics from [Columbia University](https://www.mailman.columbia.edu/become-student/departments/biostatistics) in 2019. My dissertation was advised by [Jeff Goldsmith](http://jeffgoldsmith.com/) and focused on methods for analyzing and visualizing functional data, with applications in wearable devices, structural MRI, and neurobiology. 
 
 <br>
 
 #### Contact Information
 
 Julia Wrobel
-[Department of Biostatistics](http://www.mailman.columbia.edu/academic-departments/biostatistics)  
-[Columbia Mailman School of Public Health](http://www.mailman.columbia.edu/)  
-722 West 168th Street, Room 657  
-New York, New York 10032  
+[Department of Biostatistics & Informatics](http://www.ucdenver.edu/academics/colleges/PublicHealth/Academics/departments/Biostatistics/Pages/welcome.aspx)  
+[Colorado School of Public Health](http://www.ucdenver.edu/academics/colleges/PublicHealth/Pages/default.aspx)  
+Building 500, Room W4137
+<br>
+13001 East 17th Place
+<br>
+Aurora, Colorado 80045
 
-Email: [jw3134@cumc.columbia.edu](mailto:jw3134@cumc.columbia.edu)  
+
+Email: [julia.wrobel@cuanschutz.edu](mailto:julia.wrobel@cuanschutz.edu)  
