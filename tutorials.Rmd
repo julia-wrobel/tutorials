@@ -9,9 +9,12 @@ output:
 <link rel="stylesheet" href="academicons.css"/>
 <link rel="stylesheet" href="styles.css" type="text/css">
 
-I love sharing new statistical programming tricks! To that end, I co-founded the [Columbia biostatistics computing club](https://columbia-computing-club.github.io/) in January 2017 with Ariel Chernofsky. Below are links to my recent tutorials.
+Below are links to my  tutorials.
 
 <br><img src="images/rladies_nba.png" alt="julia" style="width:75%"><br>
+
+* [A short course on Analysis of Multiplex Single-Cell Imaging Data in R](http://juliawrobel.com/MI_tutorial/)
+  * 04/06/2023, University of Michigan Department of Biostatistics
 
 * [Introduction to Shiny with NBA data](shiny_tutorial_nba.html): 
     * 05/08/2018, For [R Ladies NYC](http://www.rladiesnyc.org/) at NBA's New York office
@@ -23,6 +26,5 @@ I love sharing new statistical programming tricks! To that end, I co-founded the
 * [Using the OSX terminal](osx_terminal.html): 
     * 11/13/2017, [Columbia biostatistics computing club](https://columbia-computing-club.github.io/)
 
-* [`flexdashboard` with Shiny](http://jeffgoldsmith.com/DSI/shiny.html)
-    * 11/06/2017, [Jeff Goldsmith's](http://jeffgoldsmith.com/) Data Science I class
+
     
