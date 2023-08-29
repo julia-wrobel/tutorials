@@ -13,7 +13,7 @@
 
 <title>Julia Wrobel</title>
 
-<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
@@ -32,8 +32,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119400399-1"></script>
 <script>
@@ -153,11 +153,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -186,8 +190,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -195,16 +199,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -311,43 +308,29 @@ $(document).ready(function () {
 
 <p><link rel="stylesheet" href="academicons.css"/>
 <link rel="stylesheet" href="styles.css" type="text/css"></p>
-<div
-id="assistant-professor-of-biostatistics-colorado-school-of-public-health"
+<div id="assistant-professor-of-biostatistics-emory-university"
 class="section level3">
-<h3>Assistant Professor of Biostatistics, Colorado School of Public
-Health</h3>
-<p><br><img src="images/headshot2.png" alt="julia" style="width:30%"><br></p>
-<p>I am an Assistant Professor in the <a
+<h3>Assistant Professor of Biostatistics, Emory University</h3>
+<p><br><img src="images/hs1.jpg" alt="julia" style="width:30%"><br></p>
+<p>I joined Emory University as an Assistant Professor in the <a
+href="https://sph.emory.edu/departments/bios/index.html">Department of
+Biostatistics and Bionformatics</a> in 2023. Previously, I held a
+faculty appointment in the <a
 href="https://coloradosph.cuanschutz.edu/education/departments/biostatistics-informatics/academics">Department
 of Biostatistics and Informatics</a> at the <a
 href="https://coloradosph.cuanschutz.edu/">Colorado School of Public
-Health</a>, Director of the CU certificate in <a
-href="https://coloradosph.cuanschutz.edu/education/degrees-and-programs/certificates/certificate-in-health-analytics-and-data-science#ac-optional-specialty-electives-3">Health
-Analytics and Data Science</a>, and an Associate Editor for <a
-href="https://jasa-acs.github.io/repro-guide/">Reproducibility</a> at
-the <a href="https://www.tandfonline.com/toc/uasa20/current">Journal of
-the American Statistical Association</a>.</p>
-<p>I obtained a BA in chemistry from <a
+Health</a>. Before that, I obtained a BA in chemistry from <a
 href="http://www.swarthmore.edu/">Swarthmore College</a> in 2010 and a
 PhD in biostatistics from <a
 href="https://www.mailman.columbia.edu/become-student/departments/biostatistics">Columbia
-University</a> in 2019. My dissertation was advised by <a
-href="http://jeffgoldsmith.com/">Jeff Goldsmith</a> and focused on
-methods for analyzing and visualizing functional data, with applications
-in wearable devices, structural MRI, and neurobiology.</p>
+University</a> in 2019. My dissertation focused on methods for analyzing
+and visualizing functional data, with applications in wearable devices,
+structural MRI, and neurobiology.</p>
 <p><br></p>
 <div id="contact-information" class="section level4">
 <h4>Contact Information</h4>
-<p>Julia Wrobel <a
-href="http://www.ucdenver.edu/academics/colleges/PublicHealth/Academics/departments/Biostatistics/Pages/welcome.aspx">Department
-of Biostatistics &amp; Informatics</a><br />
-<a
-href="http://www.ucdenver.edu/academics/colleges/PublicHealth/Pages/default.aspx">Colorado
-School of Public Health</a><br />
-Building 500, Room W4137 <br> 13001 East 17th Place <br> Aurora,
-Colorado 80045</p>
 <p>Email: <a
-href="mailto:julia.wrobel@cuanschutz.edu">julia.wrobel@cuanschutz.edu</a></p>
+href="mailto:julia.wrobel@emory.edu">julia.wrobel@emory.edu</a></p>
 </div>
 </div>
 
