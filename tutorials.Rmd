@@ -13,6 +13,9 @@ Below are links to my  tutorials.
 
 <br><img src="images/rladies_nba.png" alt="julia" style="width:75%"><br>
 
+* [A single-cell spatial proteomics and multiplex imaging data workshop](http://juliawrobel.com/PSB_scProteomics/)
+  * 01/03/2024, Pacific Symposium on Biocomputing
+  
 * [A short course on Analysis of Multiplex Single-Cell Imaging Data in R](http://juliawrobel.com/MI_tutorial/)
   * 04/06/2023, University of Michigan Department of Biostatistics
 
