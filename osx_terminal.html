@@ -1,40 +1,53 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
 <title>How to use the OSX Terminal</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -47,38 +60,12 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
+
 
 <link rel="stylesheet" href="styles.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -86,13 +73,8 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -103,44 +85,59 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 54px;
-  padding-bottom: 40px;
+.dropdown-submenu {
+  position: relative;
 }
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 59px;
-  margin-top: -59px;
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
 }
-
-.section h2 {
-  padding-top: 59px;
-  margin-top: -59px;
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
 }
-.section h3 {
-  padding-top: 59px;
-  margin-top: -59px;
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
 }
-.section h4 {
-  padding-top: 59px;
-  margin-top: -59px;
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
 }
-.section h5 {
-  padding-top: 59px;
-  margin-top: -59px;
+.dropdown-submenu.pull-left {
+  float: none;
 }
-.section h6 {
-  padding-top: 59px;
-  margin-top: -59px;
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -150,55 +147,83 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
-
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -212,6 +237,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -247,8 +278,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -258,8 +287,18 @@ div.tocify {
 
 </style>
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
+<div class="row">
 <div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
@@ -273,7 +312,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -325,7 +364,7 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -334,93 +373,137 @@ div.tocify {
 </div>
 
 
-<p><link rel="stylesheet" href="academicons.css"/> <link rel="stylesheet" href="styles.css" type="text/css"></p>
+<p><link rel="stylesheet" href="academicons.css"/>
+<link rel="stylesheet" href="styles.css" type="text/css"></p>
 <p>This tutorial provides an introduction to the Unix command line.</p>
 <div id="what-is-the-osx-terminal" class="section level2">
 <h2>What is the OSX terminal?</h2>
-<p>The <strong>OSX terminal</strong> provides an command line interface to Mac operating system (OS). This allows you to</p>
+<p>The <strong>OSX terminal</strong> provides an command line interface
+to Mac operating system (OS). This allows you to</p>
 <ul>
 <li>customize your workspace</li>
 <li>work faster and more efficiently: no mouse or touchpad!</li>
 <li>better debug when you break stuff</li>
 </ul>
-<p>This tutorial will teach you how to get started with the <strong>Unix</strong> command line, which encompasses <em>Linux</em> systems <em>Android</em>, <em>iOS</em>, and <em>macOS</em>.</p>
-<p>I called this tutorial “Using the OSX terminal” but what we learn here will allow you to interact with any OS within the family Unix operating systems.</p>
+<p>This tutorial will teach you how to get started with the
+<strong>Unix</strong> command line, which encompasses <em>Linux</em>
+systems <em>Android</em>, <em>iOS</em>, and <em>macOS</em>.</p>
+<p>I called this tutorial “Using the OSX terminal” but what we learn
+here will allow you to interact with any OS within the family Unix
+operating systems.</p>
 </div>
 <div id="getting-started" class="section level2">
 <h2>Getting started</h2>
 <p>There are two ways to open the OSX terminal.</p>
 <ol style="list-style-type: decimal">
-<li>Open <code>terminal</code> with Spotlight Search using <code>Cmd-space</code></li>
+<li>Open <code>terminal</code> with Spotlight Search using
+<code>Cmd-space</code></li>
 <li>Open Applications &gt; Utilities &gt; Terminal</li>
 </ol>
-<p>You open terminal will look something like this:</p>
+<p>Your open terminal will look something like this:</p>
 <p><img src="images/terminal_open.png" style="width:75%"></p>
-<p>You’ll see a <em>prompt</em> on the screen, which is an alphanumeric string that (usually) ends in <strong>$</strong>. Commands are typed after the <strong>$</strong>. In the screenshot provided I typed the command <code>cd Desktop</code>, which we’ll get to shortly.</p>
-<p>First we’ll use the <code>echo</code> command, which prints a string to the console. Type ‘echo hello’ at the prompt and press Return.</p>
+<p>You’ll see a <em>prompt</em> on the screen, which is an alphanumeric
+string that (usually) ends in <strong>$</strong>. Commands are typed
+after the <strong>$</strong>. In the screenshot provided I typed the
+command <code>cd Desktop</code>, which we’ll get to shortly.</p>
+<p>First we’ll use the <code>echo</code> command, which prints a string
+to the console. Type ‘echo hello’ at the prompt and press Return.</p>
 <pre class="r"><code>$ echo hello
 hello
 $ echo &#39;hello&#39;
 hello
 $ echo &quot;hello&quot;
 hello</code></pre>
-<p>All of the calls above produce the same result. You can use quotations to define a string, but often you don’t have to! Be careful, though! If you forget to close the string like in the example below,</p>
+<p>All of the calls above produce the same result. You can use
+quotations to define a string, but often you don’t have to! Be careful,
+though! If you forget to close the string like in the example below,</p>
 <pre class="r"><code>$ echo &quot;hello
 &gt;</code></pre>
-<p>you won’t get the prompt line back! To get back to the prompt line, <strong>$</strong>, type <code>Ctrl-C</code>. This will get you out of trouble in many other cases as well.</p>
+<p>you won’t get the prompt line back! To get back to the prompt line,
+<strong>$</strong>, type <code>Ctrl-C</code>. This will get you out of
+trouble in many other cases as well.</p>
 <p><strong>Try it!</strong></p>
 <ul>
-<li>type <code>echo some cool message</code> after the <strong>$</strong> and press Return</li>
+<li>type <code>echo some cool message</code> after the
+<strong>$</strong> and press Return</li>
 </ul>
 <div id="asking-for-help" class="section level3">
 <h3>Asking for help</h3>
-<p>Typing <code>? function_name()</code> into your <code>R Studio</code> console brings up the help file, or <em>documentation</em>, for that particular function. Knowing how to access and read the documentation for a programming language is a crucial set of skills. How do we pull up documentation for the Unix and Unix-like operating systems?</p>
+<p>Typing <code>? function_name()</code> into your <code>R Studio</code>
+console brings up the help file, or <em>documentation</em>, for that
+particular function. Knowing how to access and read the documentation
+for a programming language is a crucial set of skills. How do we pull up
+documentation for the Unix and Unix-like operating systems?</p>
 <p><strong>Let me <em>man-page-splain</em> this to you</strong>.</p>
-<p>The documentation for Unix is pulled up using the <code>man</code> command, which stands for <em>manual</em>, as in user manual.</p>
+<p>The documentation for Unix is pulled up using the <code>man</code>
+command, which stands for <em>manual</em>, as in user manual.</p>
 <pre class="r"><code>$ man echo</code></pre>
-<p>The above command will pull up the documentation for the <code>echo</code> command, which looks like this:</p>
+<p>The above command will pull up the documentation for the
+<code>echo</code> command, which looks like this:</p>
 <p><img src="images/man_page.png" style="width:95%"></p>
-<p><code>man</code> pages can take getting used to! Luckily all follow the same format:</p>
+<p><code>man</code> pages can take getting used to! Luckily all follow
+the same format:</p>
 <ul>
-<li>commands, like <code>echo</code>, have <em>options</em>, or <strong>flags</strong>, that are specific to that command and help you customize what you are trying to do
+<li>commands, like <code>echo</code>, have <em>options</em>, or
+<strong>flags</strong>, that are specific to that command and help you
+customize what you are trying to do
 <ul>
 <li>similiar to <em>arguments</em> of a function in <code>R</code></li>
-<li>access using a <code>-</code> after the name of the command: <code>command_name -flag_name</code></li>
-<li>you can use multiple flags with one command like this: <code>command_name -flag1 -flag2</code></li>
+<li>access using a <code>-</code> after the name of the command:
+<code>command_name -flag_name</code></li>
+<li>you can use multiple flags with one command like this:
+<code>command_name -flag1 -flag2</code></li>
 </ul></li>
-<li>The <strong>SYNOPSIS</strong> part of a <code>man</code> page shows what flags are available for that particular command
+<li>The <strong>SYNOPSIS</strong> part of a <code>man</code> page shows
+what flags are available for that particular command
 <ul>
-<li>for the <code>echo</code> command there is only one flag option: <code>-n</code></li>
-<li>options are explained in the <strong>DESCRIPTION</strong> section</li>
+<li>for the <code>echo</code> command there is only one flag option:
+<code>-n</code></li>
+<li>options are explained in the <strong>DESCRIPTION</strong>
+section</li>
 </ul></li>
-<li>exit a <code>man</code> page by pressing <code>Q</code> on your keyboard</li>
+<li>exit a <code>man</code> page by pressing <code>Q</code> on your
+keyboard</li>
 </ul>
 <p>For example, try</p>
 <pre class="r"><code>$ echo -n hello world</code></pre>
-<p>What do we expect will happen here based on the <em>description</em> in the <code>man</code> page for <code>echo</code>?</p>
+<p>What do we expect will happen here based on the <em>description</em>
+in the <code>man</code> page for <code>echo</code>?</p>
 </div>
 <div id="navigating-your-systems-file-structure" class="section level3">
 <h3>Navigating your system’s file structure</h3>
-<p>Folders within you computer are called <strong>directories</strong>. You can navigate around to different directories, remove or create directories, remove or create files, move files around, and list their contents all from the terminal.</p>
-<p>These section may seem fairly basic but these are also the commands I use the most often, so I’m going to spend some time on them.</p>
+<p>Folders within you computer are called <strong>directories</strong>.
+You can navigate around to different directories, remove or create
+directories, remove or create files, move files around, and list their
+contents all from the terminal.</p>
+<p>This section may seem fairly basic but these are also the commands I
+use the most often, so I’m going to spend some time on them.</p>
 <ul>
 <li><code>pwd</code>: Return name of current working directory</li>
-<li><code>ls</code>: List files in your current working directory</li>
-<li><code>ls -a</code>: list <strong>hidden</strong> files as well as other files
+<li><code>ls</code>: List files in your current working directory
 <ul>
-<li>Hidden files are often part of the instructions for the OS or instructions for a particular application</li>
+<li><code>ls -a</code>: list <strong>hidden</strong> files as well as
+other files
+<ul>
+<li>Hidden files are often part of the instructions for the OS or
+instructions for a particular application</li>
 <li>Usually invisible when searching through folders</li>
-<li>Exist as hidden because they are not supposed to be oft modifyied or moved around</li>
+<li>Exist as hidden because they are not supposed to be oft modifyied or
+moved around</li>
 <li>Examples: .git, .gitignore, .Rhistory</li>
 </ul></li>
-<li><code>cd</code>: Change directory. Without anything else this command takes you to the home directory
-<ul>
-<li><code>cd ..</code>: Moves up one directory</li>
-<li><code>cd ../..</code>: Moves up two directories ** <code>cd -</code>: Moves to the directory you were just in</li>
 </ul></li>
+<li><code>cd</code>: Change directory. Without anything else this
+command takes you to the home directory * <code>cd ..</code>: Moves up
+one directory * <code>cd ../..</code>: Moves up two directories **
+<code>cd -</code>: Moves to the directory you were just in</li>
 </ul>
-<p>Let’s open the terminal and navigate through our directory structure and take a look at what’s in some of the folders. Feel free to use <code>man command_name</code> if you want to learn more about some of the flags for these commands.</p>
-<p>Let’s get back to the terminal shell and try some of these out. Here’s a few example commands:</p>
+<p>Let’s open the terminal and navigate through our directory structure
+and take a look at what’s in some of the folders. Feel free to use
+<code>man command_name</code> if you want to learn more about some of
+the flags for these commands.</p>
+<p>Let’s get back to the terminal shell and try some of these out.
+Here’s a few example commands:</p>
 <pre class="r"><code>$ pwd
 /Users/juliawrobel
 $ cd Desktop
@@ -432,14 +515,21 @@ $ man ls</code></pre>
 </div>
 <div id="creating-and-manipulating-files" class="section level3">
 <h3>Creating and manipulating files</h3>
-<p>Okay, so now we can navigate around our computer’s file system, but what about editing files and directories? The following commands will get you far.</p>
+<p>Okay, so now we can navigate around our computer’s file system, but
+what about editing files and directories? The following commands will
+get you far.</p>
 <ul>
 <li><code>mkdir</code>: make directory</li>
-<li><code>rm</code>: remove a file (or directory, with special options). Irreversible, so be careful!</li>
+<li><code>rm</code>: remove a file (or directory, with special options).
+Irreversible, so be careful!</li>
 <li><code>cp</code>: Copy a file</li>
-<li><code>mv</code>: Move and rename files. Can be used just to rename a file if you do not want to retain a copy of the old file</li>
+<li><code>mv</code>: Move and rename files. Can be used just to rename a
+file if you do not want to retain a copy of the old file</li>
 <li><code>open</code>: Open a file or directory</li>
-<li><code>touch</code>: technically this command is for changing time stamps of files, but if the file name you give it does not exist it creates that file for you! This secondary purpose of the <code>touch</code> command can be very useful.</li>
+<li><code>touch</code>: technically this command is for changing time
+stamps of files, but if the file name you give it does not exist it
+creates that file for you! This secondary purpose of the
+<code>touch</code> command can be very useful.</li>
 </ul>
 <p>Let’s try some of these commands now.</p>
 <pre class="r"><code>$ pwd
@@ -472,34 +562,47 @@ $ open animal2.txt
 $ rm animal2_copy.txt</code></pre>
 <p><strong>Try it!</strong></p>
 <ol style="list-style-type: decimal">
-<li>create a new directory within your favorite animals directory called junk_folder</li>
+<li>create a new directory within your favorite animals directory called
+junk_folder</li>
 <li>rename the directory</li>
 <li>navigate into that directory and put a new text file in it</li>
 <li>navigate up a directory</li>
-<li>delete the directory previously named junk_folder and all of it’s contents</li>
+<li>delete the directory previously named junk_folder and all of it’s
+contents</li>
 </ol>
-<p>The last step may be a little more challenging. <strong>Hint</strong>: use an option from the <code>man</code> page for the <code>rm</code> command.</p>
+<p>The last step may be a little more challenging.
+<strong>Hint</strong>: use an option from the <code>man</code> page for
+the <code>rm</code> command.</p>
 </div>
 </div>
 <div id="shortcuts" class="section level2">
 <h2>Shortcuts</h2>
-<p>This is an interlude on some tricks and shortcuts to maximize your efficiency when using the terminal.</p>
+<p>This is an interlude on some tricks and shortcuts to maximize your
+efficiency when using the terminal.</p>
 <ul>
 <li>up arrow: access previous commands</li>
 <li>tab: autocomplete! Super useful</li>
-<li><code>!command_name</code>: Repeats the line from the last time you used that command. Useful for long commands you don’t want to re-type</li>
+<li><code>!command_name</code>: Repeats the line from the last time you
+used that command. Useful for long commands you don’t want to
+re-type</li>
 <li><code>Ctrl-A</code> : Moves to the beginning of the line</li>
 <li><code>Ctrl-E</code>: Moves to the end of the line</li>
 <li><code>Ctrl-U</code>: Clears everthing to the left of the cursor</li>
 <li><code>Option-click</code>: Moves cursor to location clicked</li>
-<li><code>clear</code>: Typed as a command at the prompt, this clears the window</li>
+<li><code>clear</code>: Typed as a command at the prompt, this clears
+the window</li>
 </ul>
-<p>In our next live coding chunk I’ll incorporate some of these shortcuts.</p>
+<p>In our next live coding chunk I’ll incorporate some of these
+shortcuts.</p>
 </div>
 <div id="text-file-tricks" class="section level2">
 <h2>Text file tricks</h2>
-<p>I could have probably come up with a better header here- but the point is you can create, look at, and manipulate text files right from the terminal, and this can streamline your workflow.</p>
-<p>As an example we’re going to work with a text snippet from the <a href="https://en.wikipedia.org/wiki/Giant_panda">Wikipedia page on Giant Pandas</a>.</p>
+<p>I could have probably come up with a better header here- but the
+point is you can create, look at, and manipulate text files right from
+the terminal, and this can streamline your workflow.</p>
+<p>As an example we’re going to work with a text snippet from the <a
+href="https://en.wikipedia.org/wiki/Giant_panda">Wikipedia page on Giant
+Pandas</a>.</p>
 <pre><code>The giant panda (Ailuropoda melanoleuca, literally &quot;black and white cat-foot&quot;; Chinese: 大熊猫; pinyin: dà xióng māo, literally &quot;big bear cat&quot;), also known as panda bear or simply panda, is a bear native to south central China. 
 It is easily recognized by the large, distinctive black patches around its eyes, over the ears, and across its round body. 
 The name &quot;giant panda&quot; is sometimes used to distinguish it from the unrelated red panda. Though it belongs to the order Carnivora, the giant panda&#39;s diet is over 99% bamboo. 
@@ -516,34 +619,43 @@ Wild population estimates vary; one estimate shows that there are about 1,590 in
 Some reports also show that the number of giant pandas in the wild is on the rise. 
 
 In March 2015, Mongabay stated that the wild giant panda population had increased by 268, or 16.8%, to 1,864. In 2016, the IUCN reclassified the species from &quot;endangered&quot; to &quot;vulnerable&quot;.</code></pre>
-<p>Using tools we just learned about, create <strong>panda.txt</strong>, a file containing the above text about giant pandas. Put it in your <code>favorite_animals</code> directory. There are two ways you can do this: (1) using the <code>echo</code> command and the <code>&gt;</code> operator, and (2) using the <code>touch</code> command to create a new file then the <code>open</code> command to open and edit it.</p>
+<p>Using tools we just learned about, create <strong>panda.txt</strong>,
+a file containing the above text about giant pandas. Put it in your
+<code>favorite_animals</code> directory. There are two ways you can do
+this: (1) using the <code>echo</code> command and the <code>&gt;</code>
+operator, and (2) using the <code>touch</code> command to create a new
+file then the <code>open</code> command to open and edit it.</p>
 <div id="understanding-your-text-files" class="section level3">
 <h3>Understanding your text files</h3>
-<p>The following commands allow you to view, quantify, compare, and search text files.</p>
+<p>The following commands allow you to view, quantify, compare, and
+search text files.</p>
 <ul>
 <li><code>head</code>: shows the first 10 lines of a file<br />
 </li>
 <li><code>tail</code>: shows the last 10 lines of a file</li>
-<li><code>wc</code>: word count! Counts the number of lines, words, and bytes in a file</li>
+<li><code>wc</code>: word count! Counts the number of lines, words, and
+bytes in a file</li>
 <li><code>diff</code>: Compare two files line by line</li>
 <li><code>&gt;</code>: Redirect operator (we touched on this earlier)
 <ul>
 <li>Used to direct the results of a command to a new file</li>
-<li>e.g. <code>head panda.txt &gt; panda_head.txt</code></li>
+<li>e.g. <code>head panda.txt &gt; panda_head.txt</code></li>
 </ul></li>
 <li><code>|</code>: Pipe operator
 <ul>
 <li>Used to string together commands</li>
 <li>Analogous to <code>%&gt;%</code> function in <code>R</code></li>
-<li>e.g. <code>head panda.txt | wc</code></li>
+<li>e.g. <code>head panda.txt | wc</code></li>
 </ul></li>
-<li><code>less</code>: allows you to interactively look through and search a text file in the terminal
+<li><code>less</code>: allows you to interactively look through and
+search a text file in the terminal
 <ul>
-<li>e.g. <code>less file_name.txt</code></li>
+<li>e.g. <code>less file_name.txt</code></li>
 <li>More flexible than <code>cat file_name.txt</code></li>
 <li><code>^F</code>: Move forward a page</li>
 <li><code>^B</code>: Move backwards a page</li>
-<li><code>/&lt;string&gt;</code>: Backslash allows you to search through the file</li>
+<li><code>/&lt;string&gt;</code>: Backslash allows you to search through
+the file</li>
 <li><code>n</code>: Move to next search result</li>
 <li><code>N</code>: Move to previous search result</li>
 <li><code>G</code>: Move to the end of the file</li>
@@ -565,22 +677,32 @@ q
 $ cp panda2.txt
 $ diff panda.txt panda2.txt</code></pre>
 <p><strong>Try it!</strong></p>
-<p>Let’s add a photo of one of our favorite animals to the <code>favorite_animals</code> folder</p>
+<p>Let’s add a photo of one of our favorite animals to the
+<code>favorite_animals</code> folder</p>
 <ol style="list-style-type: decimal">
-<li>Google image search an animal of your choice. I’m going to search <em>kit foxes</em></li>
-<li>Take a screen shot of one of those images. On Macs you can take screen shots using <code>Cmd-shift-4</code> and dragging the cursor over the area on the screen you want to select</li>
-<li>Screenshots automatically get saved to your Desktop with an uninformative name-
+<li>Google image search an animal of your choice. I’m going to search
+<em>kit foxes</em></li>
+<li>Take a screen shot of one of those images. On Macs you can take
+screen shots using <code>Cmd-shift-4</code> and dragging the cursor over
+the area on the screen you want to select</li>
+<li>Screenshots automatically get saved to your Desktop with an
+uninformative name-
 <ol style="list-style-type: decimal">
 <li>Navigate to your Desktop</li>
-<li>Rename your screenshot and move it to the <code>favorite_animals</code> folder</li>
+<li>Rename your screenshot and move it to the
+<code>favorite_animals</code> folder</li>
 </ol></li>
-<li>Navigate back to your <code>favorite_animals</code> folder and check that your image is there. What commands did you use to do this? What other commands could you also use?</li>
+<li>Navigate back to your <code>favorite_animals</code> folder and check
+that your image is there. What commands did you use to do this? What
+other commands could you also use?</li>
 </ol>
 </div>
 </div>
 <div id="running-r-within-the-terminal" class="section level2">
 <h2>Running <code>R</code> within the terminal</h2>
-<p>You can run <code>R</code> interactively right from the terminal! Just type <code>R</code> at the prompt then proceed as you would in an R console. Type <strong>q()</strong> to quit.</p>
+<p>You can run <code>R</code> interactively right from the terminal!
+Just type <code>R</code> at the prompt then proceed as you would in an R
+console. Type <strong>q()</strong> to quit.</p>
 <pre class="r"><code>$ R
 R is a collaborative project with many contributors.
 Type &#39;contributors()&#39; for more information and
@@ -597,11 +719,20 @@ Type &#39;q()&#39; to quit R.
 &gt; q()
 Save workspace image? [y/n/c]: n
 $</code></pre>
-<p>You can also interactively run other programming languages right from the terminal, including <code>Python</code>, <code>perl</code> and others. Doing this can be useful for a quick calculation or if you’re working from within an HPC cluster or other environment that might not have <code>R Studio</code> available.</p>
+<p>You can also interactively run other programming languages right from
+the terminal, including <code>Python</code>, <code>perl</code> and
+others. Doing this can be useful for a quick calculation or if you’re
+working from within an HPC cluster or other environment that might not
+have <code>R Studio</code> available.</p>
 </div>
 <div id="running-the-terminal-within-r-studio" class="section level2">
 <h2>Running the terminal within <code>R Studio</code></h2>
-<p>Right now this is only available in a <a href="https://blog.rstudio.com/2017/08/11/rstudio-v1-1-preview-terminal/">special new Release</a> of <code>R Studio</code>. * Use Unix-like commands from within <code>R Studio</code> * (Seems that it) Works for PC users as well as Mac users * Not yet available for the “regular” version of <code>R Studio</code></p>
+<p>Right now this is only available in a <a
+href="https://blog.rstudio.com/2017/08/11/rstudio-v1-1-preview-terminal/">special
+new Release</a> of <code>R Studio</code>. * Use Unix-like commands from
+within <code>R Studio</code> * (Seems that it) Works for PC users as
+well as Mac users * Not yet available for the “regular” version of
+<code>R Studio</code></p>
 </div>
 <div id="other-fun-tricks" class="section level2">
 <h2>Other fun tricks</h2>
@@ -622,24 +753,35 @@ Su Mo Tu We Th Fr Sa
 19 20 21 22 23 24 25
 26 27 28 29 30</code></pre>
 <ul>
-<li>Print a string a whole bunch of times (exit with <code>Ctrl-C</code>)</li>
+<li>Print a string a whole bunch of times (exit with
+<code>Ctrl-C</code>)</li>
 </ul>
 <pre class="r"><code>$ yes &quot;this tutorial is awesome!&quot;</code></pre>
 <ul>
 <li>Get the history of recently used commands.</li>
 </ul>
-<p>Want to revisit the commands I used while live-coding today? I have stored all the commands I used in the live-coding session into a text file, and will post them shortly.</p>
-<p>This is how I stored these commands. First I store the history in a text file then I clear it.</p>
+<p>Want to revisit the commands I used while live-coding today? I have
+stored all the commands I used in the live-coding session into a text
+file, and will post them shortly.</p>
+<p>This is how I stored these commands. First I store the history in a
+text file then I clear it.</p>
 <pre class="r"><code>$ history &gt; history.txt
 $ history -c</code></pre>
 </div>
 <div id="resources" class="section level2">
 <h2>Resources</h2>
 <ul>
-<li><a href="https://www.learnenough.com/command-line-tutorial">Learn enough command line to be dangerous</a>: this tutorial is more or less an expanded version of what I talked about today.</li>
-<li><a href="http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line">Another beginner’s guide</a></li>
-<li><a href="http://www.tutorialspoint.com/unix/">List of more tutorials</a>: tons of resources exist if you want to get more advanced!</li>
-<li><a href="https://www.learnenough.com/git-tutorial">Using <code>git</code> through the command line</a></li>
+<li><a href="https://www.learnenough.com/command-line-tutorial">Learn
+enough command line to be dangerous</a>: this tutorial is more or less
+an expanded version of what I talked about today.</li>
+<li><a
+href="http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line">Another
+beginner’s guide</a></li>
+<li><a href="http://www.tutorialspoint.com/unix/">List of more
+tutorials</a>: tons of resources exist if you want to get more
+advanced!</li>
+<li><a href="https://www.learnenough.com/git-tutorial">Using
+<code>git</code> through the command line</a></li>
 </ul>
 </div>
 
@@ -654,13 +796,59 @@ $ history -c</code></pre>
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

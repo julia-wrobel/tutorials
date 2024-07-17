@@ -43,7 +43,7 @@ There are two ways to open the OSX terminal.
 1. Open `terminal` with Spotlight Search using `Cmd-space`
 1. Open Applications > Utilities > Terminal
 
-You open terminal will look something like this: 
+Your open terminal will look something like this: 
 
 <img src="images/terminal_open.png" style="width:75%">
 
@@ -113,7 +113,7 @@ What do we expect will happen here based on the _description_ in the `man` page 
 Folders within you computer are called **directories**. 
 You can navigate around to different directories, remove or create directories, remove or create files, move files around, and list their contents all from the terminal.
 
-These section may seem fairly basic but these are also the commands I use the most often, so I'm going to spend some time on them. 
+This section may seem fairly basic but these are also the commands I use the most often, so I'm going to spend some time on them. 
 
 * `pwd`: Return name of current working directory
 * `ls`: List files in your current working directory
