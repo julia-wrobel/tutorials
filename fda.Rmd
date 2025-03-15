@@ -1,0 +1,321 @@
+---
+title: "Functional data analysis in R"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    in_header: ga_script.html
+---
+
+<link rel="stylesheet" href="academicons.css"/>
+<link rel="stylesheet" href="styles.css" type="text/css">
+
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%",
+  eval = TRUE
+)
+```
+
+# Overview
+
+
+This tutorial provides an introduction to key functional regression models. It is a work in progress and will likely be updated over time. Libraries used in this tutorial are loaded below.
+
+```{r}
+library(tidyverse)
+library(refund)
+library(mgcv)
+library(patchwork)
+```
+
+
+Note that we will use the `refund` package and `mgcv` to do functional data analysis.
+
+
+# Pupillometer data
+
+I will be using examples using curves of pupil response to a light stimulus. Some subjects smoke cannabis 60 minutes before the light stimulus and others did not.  The goal is to see whether the pupil response to light differs for those who used cannabis. You can download the data HERE.
+
+```{r}
+load(here::here("Downloads", "pupil.Rdata"))
+
+head(pupil)
+```
+
+The functional data is percent change in pupil diameter over the course of 5 seconds immediately after the pupil is exposed to a flash of light. This is referred to as the **pupil light response curve**.
+
+
+Variables included in this dataset are:
+
+- `id`: subject id
+- `use`: whether a subject used cannabis, `1=use` and `0=no use`
+- `age`, in years
+- `alcohol`: average weekly number of alcoholic beverages
+- `seconds`: the functional domain
+- `percent_change`: the pupil light response curve collected 40 minutes **after** smoking cannabis for those with `use = 1` and after an equivalent no-smoking rest time for those with `use = 0`
+- `percent_change_baseline`: the pupil light response curve values at baseline, before any participants have consumed cannabis
+
+
+
+
+
+Curves are shown below:
+
+```{r}
+
+baseline = pupil %>%
+  ggplot(aes(seconds, percent_change_baseline)) +
+  geom_line(aes(group = id), alpha = 0.2) +
+  geom_smooth(aes(color = factor(use), linetype = factor(use)), se = FALSE) +
+  #facet_wrap(~use_group) +
+  theme_minimal() +
+  ylim(-60, 20) +
+  theme(legend.position = "bottom") 
+
+post = pupil %>%
+  ggplot(aes(seconds, percent_change)) +
+  geom_line(aes(group = id), alpha = 0.2) +
+  geom_smooth(aes(color = factor(use), linetype = factor(use)), se = FALSE) +
+  #facet_wrap(~use_group) +
+  theme_minimal() +
+  ylim(-60, 20) +
+  theme(legend.position = "bottom") 
+  
+baseline + post
+```
+
+
+
+
+# SoFR
+
+For scalar-on-function regression with a Gaussian outcome the model we are interested in is 
+
+$$Y_i = \beta_0 + \sum_j \beta_jX_{ij} + \sum_k\int_t \mathcal{B}_k(t)Z_{ik}(t)dt + \epsilon_i,$$
+where:
+
+- $Y_i$ is a scalar outcome
+- Each $X_{ij}$ is a scalar covariate
+- Each $\beta_j$ is a regression coefficient for a scalar covariate
+- Each $Z_{ik}(t)$ is a functional covariate
+- Each $\mathcal{B}_k(t)$ is a *coefficient function*, a regression coefficient for a functional covariate
+- $\epsilon_i$ are normally distributed iid errors
+
+The GLM version of this model (for non-Gaussian outcomes, usually binary) is:
+
+$$g(E[Y_i|X_i, Z_i]) = \beta_0 + \sum_j \beta_jX_{ij} + \sum_k\int_t \mathcal{B}_k(t)Z_{ik}(t)dt,$$
+where $g(\cdot)$ is a known link function (think logit in the case of logistic regression, for example.)
+
+
+## Important practical considerations
+
+* For SoFR, can't have missing functional observations so need to impute or remove
+  * Default is to use complete.cases (check your sample size in the results!)
+* For `pfr()`, binomial responses should be specified as a numeric vector rather than as a matrix or a factor.
+
+
+## refund::pfr()
+
+First I'll fit a model with a continuous scalar outcome (age) and functional predictor (percent change in pupil size) using the `pfr()` function from the `refund` package.  `pfr` stands for "penalized functional regression" and was originally associated with this paper (ADD REFERENCE).
+
+
+The data need to be set up a specific way for modeling so we will process the data first.
+
+```{r}
+sofr_df = pupil %>%
+  select(-percent_change_baseline) %>%
+  pivot_wider(names_from = seconds, values_from = percent_change, 
+                names_prefix = "t_") %>%
+  as.data.frame()
+
+pupil_mat = sofr_df %>% select(starts_with("t_")) %>% as.matrix()
+
+# reorganize data for use with refund::pfr() function
+sofr_df$percent_change = pupil_mat
+```
+
+
+```{r}
+pfr_age = pfr(age ~ lf(percent_change, k = 30, bs = "cr"),
+              data = sofr_df)
+```
+
+
+```{r}
+summary(pfr_age)
+
+plot(pfr_age)
+```
+
+
+
+
+```{r}
+pfr_use = pfr(use ~ lf(percent_change, k = 30, bs = "cr"),
+              family = binomial,
+              data = sofr_df)
+```
+
+
+
+```{r}
+summary(pfr_use)
+plot(pfr_use)
+```
+
+
+
+## mgcv::gam()
+
+First we need to process the data a little bit differently- some of this is done under the hood in `pfr()`
+
+```{r}
+  ncols = ncol(pupil_mat)
+
+  sind = seq(0, 1, len = ncols)
+  smat = matrix(sind, nrow(sofr_df), ncols, byrow = TRUE)
+  
+  sofr_df$smat = I(smat)
+  sofr_df$lmat = I(matrix(1/ncols, nrow(sofr_df), ncols))
+  sofr_df$zlmat = I(sofr_df$lmat * sofr_df$percent_change)
+```
+
+
+```{r}
+gam_use = gam(use ~ s(smat, by=zlmat, bs = "cr", k = 30) + age + alcohol, 
+                   data= sofr_df,
+                   method = "REML", family = binomial)
+```
+
+
+```{r}
+summary(gam_use)
+plot(gam_use)
+```
+
+
+
+### Plotting in mgcv
+
+
+
+# FoSR
+
+The function-on-scalar regression model is 
+
+$$Y_i(t) = \beta_0(t) + \sum_j \beta_j(t)X_{ij} + b_i(t) + \epsilon_i(t),$$
+
+where:
+
+- $Y_i(t)$ is a functional outcome
+- Each $X_{ij}$ is a scalar covariate
+- Each $\beta_j(t)$ is a coefficient function
+- $b_i(t)$ is a subject-specific functional random effect. This captures correlation within subjects over time that is not captured by the mean. This term is not always included in FoSR models, but it's generally a good idea because it gives better inference
+- $\epsilon_i(t)$ are normally distributed iid errors
+
+
+## Important practical considerations
+
+* Need to dummy code categorical variables (1 vs. 0 for binary, for example)
+* Subject id variable should be a factor
+
+
+
+## Modeling
+
+For FoSR I like to use `mgcv::gam()` directly. This modeling process happens in 3 steps:
+
+1. Fit the mean model $Y_i(t) = \beta_0(t) + \sum_j \beta_j(t)X_{ij} + \epsilon_i(t)$, assuming iid errors across individuals and the domain.
+2. Obtain residuals from the model in step (1) and decompose these into principle directions of variation (eigenfunctions) using FPCA.
+3. Refit the model using top eigenfunctions from step (2) as random effects. This step allows us to estimate $b_i(t)$ and obtain more valid inference for our coefficient function.
+
+
+
+
+These steps are implemented below:
+
+```{r}
+##########################################################################################
+## step 1
+mean_mod = mgcv::gam(percent_change ~ s(seconds, k=30, bs="cr") + 
+                          s(seconds, by=use, k=30, bs = "cr"), 
+                  data = pupil, method = "REML")
+
+########################################################################################## 
+## step 2
+## Create a matrix of residuals
+
+resid_df = pupil %>%
+  filter(!is.na(percent_change)) %>%
+  select(id, seconds) %>%
+  mutate(resid = mean_mod$residuals) %>%
+  pivot_wider(names_from = seconds, values_from = resid, names_prefix = "resid.")
+  
+resid_mat = as.matrix(resid_df[,-1])
+rownames(resid_mat) = resid_df$id
+
+fpca_results = fpca.face(resid_mat, argvals = unique(pupil$seconds), knots = 15)
+eigenfunctions <- as.data.frame(fpca_results$efunctions)
+colnames(eigenfunctions) <- paste0("Phi", seq(1, fpca_results$npc))
+eigenfunctions$seconds <- unique(pupil$seconds)
+pupil = pupil %>% left_join(., eigenfunctions, by = "seconds") %>%
+  as_tibble() %>%
+  arrange(id, seconds) %>%
+  mutate(id = factor(id))
+
+##########################################################################################
+# Step 3
+
+fosr_mod <- mgcv::bam(percent_change ~ 
+                            s(seconds, k=30, bs="cr") + 
+                            s(seconds, by=use, k=30, bs = "cr") + 
+                            s(id, by = Phi1, bs="re") + 
+                            s(id, by = Phi2, bs="re")+
+                            s(id, by = Phi3, bs="re") + 
+                            s(id, by = Phi4, bs="re"), 
+                          method = "fREML", data = pupil, discrete = TRUE)
+summary(fosr_mod)
+
+```
+
+
+
+# FoFR
+
+Function-on-function regression is a class of models where the outcome is a function and the covariate(s) is/are also functions. There are different formulations of this model and which one you pick really depends on what your data looks like and what questions you're trying to answer.
+
+The main models to consider are summarized below. 
+
+## Functional linear concurrent model
+
+A functional linear concurrent model describes the relationship between a functional response and a functional predictor, where the effect of the predictor at each time point is modeled by a time-varying coefficient function, allowing the association to evolve dynamically over time. A functional linear concurrent model can be thought of as performing separate linear regressions at each time point $t$, but with the added constraint that the regression coefficients vary smoothly over $t$, ensuring temporal coherence in the estimated relationship between the functional predictor and response.
+
+This model is given by: 
+
+$$Y_i(t) =   \beta_0(t) + \sum_{j} \beta_j(t)X_{ij}(t)  + b_i(t) +  \epsilon_i(t)$$
+
+## Historical functional model
+
+A historical functional model extends the functional linear concurrent model by allowing the response at time $t$ to depend not only on the predictor at $t$ but also on its past values.
+
+- Useful for when function and covariate are observed on the same domain, and you don't want the covariate measurements from the future to predict the response in the present.
+
+
+$$Y_i(t) =   \beta_0(t) + \sum_{j}\int_{s = 0}^t \beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)$$
+
+
+## FoFR model
+
+The functional outcome and functional covariate can (but don't necessarily need to be) on the same domain. Allows the functional response $Y(t)$ to depend on the entire functional predictor(s).
+
+
+$$Y_i(t) =  \beta_0(t) + \sum_{j}\int_s \beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)$$
+
+# FPCA
+
+Functional principle component analysis is a useful tool! And it's super easy to implement in `refund()`. I would say this is probably what `refund` is most widely used for.

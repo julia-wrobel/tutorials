@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Functional data analysis in R</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="http://juliawrobel.com/research.html">Research</a>
+</li>
+<li>
+  <a href="http://juliawrobel.com/papers.html">Papers</a>
+</li>
+<li>
+  <a href="http://juliawrobel.com/software.html">Software</a>
+</li>
+<li>
+  <a href="tutorials.html">Tutorials</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:&lt;jw3134@cumc.columbia.edu&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://juliawrobel.com/Downloads/wrobel_cv.pdf">
+    <span class="ai ai-cv ai-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://scholar.google.com/citations?user=QI8GrFUAAAAJ&amp;hl=en&amp;oi=ao">
+    <span class="ai ai-google-scholar-square ai-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/julia-wrobel/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Functional data analysis in R</h1>
+
+</div>
+
+
+<p><link rel="stylesheet" href="academicons.css"/>
+<link rel="stylesheet" href="styles.css" type="text/css"></p>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>This tutorial provides an introduction to key functional regression
+models. It is a work in progress and will likely be updated over time.
+Libraries used in this tutorial are loaded below.</p>
+<pre class="r"><code>library(tidyverse)
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.4     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+library(refund)
+library(mgcv)
+## Loading required package: nlme
+## 
+## Attaching package: &#39;nlme&#39;
+## 
+## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     collapse
+## 
+## This is mgcv 1.9-1. For overview type &#39;help(&quot;mgcv-package&quot;)&#39;.
+library(patchwork)</code></pre>
+<p>Note that we will use the <code>refund</code> package and
+<code>mgcv</code> to do functional data analysis.</p>
+</div>
+<div id="pupillometer-data" class="section level1">
+<h1>Pupillometer data</h1>
+<p>I will be using examples using curves of pupil response to a light
+stimulus. Some subjects smoke cannabis 60 minutes before the light
+stimulus and others did not. The goal is to see whether the pupil
+response to light differs for those who used cannabis. You can download
+the data HERE.</p>
+<pre class="r"><code>load(here::here(&quot;Downloads&quot;, &quot;pupil.Rdata&quot;))
+
+head(pupil)
+## # A tibble: 6 × 10
+##   id      use_group              use   age gender   bmi alcohol seconds
+##   &lt;chr&gt;   &lt;chr&gt;                &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 003-001 Daily - Concentrates     1    27 Female  22.9       4   0.602
+## 2 003-001 Daily - Concentrates     1    27 Female  22.9       4   0.635
+## 3 003-001 Daily - Concentrates     1    27 Female  22.9       4   0.668
+## 4 003-001 Daily - Concentrates     1    27 Female  22.9       4   0.702
+## 5 003-001 Daily - Concentrates     1    27 Female  22.9       4   0.735
+## 6 003-001 Daily - Concentrates     1    27 Female  22.9       4   0.769
+## # ℹ 2 more variables: percent_change_baseline &lt;dbl&gt;, percent_change &lt;dbl&gt;</code></pre>
+<p>The functional data is percent change in pupil diameter over the
+course of 5 seconds immediately after the pupil is exposed to a flash of
+light. This is referred to as the <strong>pupil light response
+curve</strong>.</p>
+<p>Variables included in this dataset are:</p>
+<ul>
+<li><code>id</code>: subject id</li>
+<li><code>use</code>: whether a subject used cannabis,
+<code>1=use</code> and <code>0=no use</code></li>
+<li><code>age</code>, in years</li>
+<li><code>alcohol</code>: average weekly number of alcoholic
+beverages</li>
+<li><code>seconds</code>: the functional domain</li>
+<li><code>percent_change</code>: the pupil light response curve
+collected 40 minutes <strong>after</strong> smoking cannabis for those
+with <code>use = 1</code> and after an equivalent no-smoking rest time
+for those with <code>use = 0</code></li>
+<li><code>percent_change_baseline</code>: the pupil light response curve
+values at baseline, before any participants have consumed cannabis</li>
+</ul>
+<p>Curves are shown below:</p>
+<pre class="r"><code>
+baseline = pupil %&gt;%
+  ggplot(aes(seconds, percent_change_baseline)) +
+  geom_line(aes(group = id), alpha = 0.2) +
+  geom_smooth(aes(color = factor(use), linetype = factor(use)), se = FALSE) +
+  #facet_wrap(~use_group) +
+  theme_minimal() +
+  ylim(-60, 20) +
+  theme(legend.position = &quot;bottom&quot;) 
+
+post = pupil %&gt;%
+  ggplot(aes(seconds, percent_change)) +
+  geom_line(aes(group = id), alpha = 0.2) +
+  geom_smooth(aes(color = factor(use), linetype = factor(use)), se = FALSE) +
+  #facet_wrap(~use_group) +
+  theme_minimal() +
+  ylim(-60, 20) +
+  theme(legend.position = &quot;bottom&quot;) 
+  
+baseline + post
+## `geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;
+## Warning: Removed 546 rows containing non-finite outside the scale range
+## (`stat_smooth()`).
+## Warning: Removed 528 rows containing missing values or values outside the scale range
+## (`geom_line()`).
+## `geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;
+## Warning: Removed 289 rows containing non-finite outside the scale range
+## (`stat_smooth()`).
+## Warning: Removed 264 rows containing missing values or values outside the scale range
+## (`geom_line()`).</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+</div>
+<div id="sofr" class="section level1">
+<h1>SoFR</h1>
+<p>For scalar-on-function regression with a Gaussian outcome the model
+we are interested in is</p>
+<p><span class="math display">\[Y_i = \beta_0 + \sum_j \beta_jX_{ij} +
+\sum_k\int_t \mathcal{B}_k(t)Z_{ik}(t)dt + \epsilon_i,\]</span>
+where:</p>
+<ul>
+<li><span class="math inline">\(Y_i\)</span> is a scalar outcome</li>
+<li>Each <span class="math inline">\(X_{ij}\)</span> is a scalar
+covariate</li>
+<li>Each <span class="math inline">\(\beta_j\)</span> is a regression
+coefficient for a scalar covariate</li>
+<li>Each <span class="math inline">\(Z_{ik}(t)\)</span> is a functional
+covariate</li>
+<li>Each <span class="math inline">\(\mathcal{B}_k(t)\)</span> is a
+<em>coefficient function</em>, a regression coefficient for a functional
+covariate</li>
+<li><span class="math inline">\(\epsilon_i\)</span> are normally
+distributed iid errors</li>
+</ul>
+<p>The GLM version of this model (for non-Gaussian outcomes, usually
+binary) is:</p>
+<p><span class="math display">\[g(E[Y_i|X_i, Z_i]) = \beta_0 + \sum_j
+\beta_jX_{ij} + \sum_k\int_t \mathcal{B}_k(t)Z_{ik}(t)dt,\]</span> where
+<span class="math inline">\(g(\cdot)\)</span> is a known link function
+(think logit in the case of logistic regression, for example.)</p>
+<div id="important-practical-considerations" class="section level2">
+<h2>Important practical considerations</h2>
+<ul>
+<li>For SoFR, can’t have missing functional observations so need to
+impute or remove
+<ul>
+<li>Default is to use complete.cases (check your sample size in the
+results!)</li>
+</ul></li>
+<li>For <code>pfr()</code>, binomial responses should be specified as a
+numeric vector rather than as a matrix or a factor.</li>
+</ul>
+</div>
+<div id="refundpfr" class="section level2">
+<h2>refund::pfr()</h2>
+<p>First I’ll fit a model with a continuous scalar outcome (age) and
+functional predictor (percent change in pupil size) using the
+<code>pfr()</code> function from the <code>refund</code> package.
+<code>pfr</code> stands for “penalized functional regression” and was
+originally associated with this paper (ADD REFERENCE).</p>
+<p>The data need to be set up a specific way for modeling so we will
+process the data first.</p>
+<pre class="r"><code>sofr_df = pupil %&gt;%
+  select(-percent_change_baseline) %&gt;%
+  pivot_wider(names_from = seconds, values_from = percent_change, 
+                names_prefix = &quot;t_&quot;) %&gt;%
+  as.data.frame()
+
+pupil_mat = sofr_df %&gt;% select(starts_with(&quot;t_&quot;)) %&gt;% as.matrix()
+
+# reorganize data for use with refund::pfr() function
+sofr_df$percent_change = pupil_mat</code></pre>
+<pre class="r"><code>pfr_age = pfr(age ~ lf(percent_change, k = 30, bs = &quot;cr&quot;),
+              data = sofr_df)</code></pre>
+<pre class="r"><code>summary(pfr_age)
+## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## age ~ s(x = percent_change.tmat, by = L.percent_change, k = 30, 
+##     bs = &quot;cr&quot;)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   33.275      2.742   12.13   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                           edf Ref.df     F p-value
+## s(percent_change.tmat):L.percent_change 2.001  2.002 0.353   0.703
+## 
+## R-sq.(adj) =  -0.0105   Deviance explained = 0.577%
+## -REML = 397.52  Scale est. = 35.808    n = 125
+
+plot(pfr_age)</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
+<pre class="r"><code>pfr_use = pfr(use ~ lf(percent_change, k = 30, bs = &quot;cr&quot;),
+              family = binomial,
+              data = sofr_df)</code></pre>
+<pre class="r"><code>summary(pfr_use)
+## 
+## Family: binomial 
+## Link function: logit 
+## 
+## Formula:
+## use ~ s(x = percent_change.tmat, by = L.percent_change, k = 30, 
+##     bs = &quot;cr&quot;)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    7.151      1.823   3.922 8.79e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                          edf Ref.df Chi.sq p-value   
+## s(percent_change.tmat):L.percent_change 2.91  3.251  14.67 0.00284 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.149   Deviance explained = 16.1%
+## -REML = 59.003  Scale est. = 1         n = 125
+plot(pfr_use)</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
+</div>
+<div id="mgcvgam" class="section level2">
+<h2>mgcv::gam()</h2>
+<p>First we need to process the data a little bit differently- some of
+this is done under the hood in <code>pfr()</code></p>
+<pre class="r"><code>  ncols = ncol(pupil_mat)
+
+  sind = seq(0, 1, len = ncols)
+  smat = matrix(sind, nrow(sofr_df), ncols, byrow = TRUE)
+  
+  sofr_df$smat = I(smat)
+  sofr_df$lmat = I(matrix(1/ncols, nrow(sofr_df), ncols))
+  sofr_df$zlmat = I(sofr_df$lmat * sofr_df$percent_change)</code></pre>
+<pre class="r"><code>gam_use = gam(use ~ s(smat, by=zlmat, bs = &quot;cr&quot;, k = 30) + age + alcohol, 
+                   data= sofr_df,
+                   method = &quot;REML&quot;, family = binomial)</code></pre>
+<pre class="r"><code>summary(gam_use)
+## 
+## Family: binomial 
+## Link function: logit 
+## 
+## Formula:
+## use ~ s(smat, by = zlmat, bs = &quot;cr&quot;, k = 30) + age + alcohol
+## 
+## Parametric coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  8.40040    2.37674   3.534 0.000409 ***
+## age         -0.04375    0.03687  -1.187 0.235315    
+## alcohol      0.08181    0.07870   1.040 0.298552    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                 edf Ref.df Chi.sq p-value   
+## s(smat):zlmat 2.844  3.175   13.9 0.00369 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.169   Deviance explained =   18%
+## -REML = 61.547  Scale est. = 1         n = 125
+plot(gam_use)</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<div id="plotting-in-mgcv" class="section level3">
+<h3>Plotting in mgcv</h3>
+</div>
+</div>
+</div>
+<div id="fosr" class="section level1">
+<h1>FoSR</h1>
+<p>The function-on-scalar regression model is</p>
+<p><span class="math display">\[Y_i(t) = \beta_0(t) + \sum_j
+\beta_j(t)X_{ij} + b_i(t) + \epsilon_i(t),\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(Y_i(t)\)</span> is a functional
+outcome</li>
+<li>Each <span class="math inline">\(X_{ij}\)</span> is a scalar
+covariate</li>
+<li>Each <span class="math inline">\(\beta_j(t)\)</span> is a
+coefficient function</li>
+<li><span class="math inline">\(b_i(t)\)</span> is a subject-specific
+functional random effect. This captures correlation within subjects over
+time that is not captured by the mean. This term is not always included
+in FoSR models, but it’s generally a good idea because it gives better
+inference</li>
+<li><span class="math inline">\(\epsilon_i(t)\)</span> are normally
+distributed iid errors</li>
+</ul>
+<div id="important-practical-considerations-1" class="section level2">
+<h2>Important practical considerations</h2>
+<ul>
+<li>Need to dummy code categorical variables (1 vs. 0 for binary, for
+example)</li>
+<li>Subject id variable should be a factor</li>
+</ul>
+</div>
+<div id="modeling" class="section level2">
+<h2>Modeling</h2>
+<p>For FoSR I like to use <code>mgcv::gam()</code> directly. This
+modeling process happens in 3 steps:</p>
+<ol style="list-style-type: decimal">
+<li>Fit the mean model <span class="math inline">\(Y_i(t) = \beta_0(t) +
+\sum_j \beta_j(t)X_{ij} + \epsilon_i(t)\)</span>, assuming iid errors
+across individuals and the domain.</li>
+<li>Obtain residuals from the model in step (1) and decompose these into
+principle directions of variation (eigenfunctions) using FPCA.</li>
+<li>Refit the model using top eigenfunctions from step (2) as random
+effects. This step allows us to estimate <span
+class="math inline">\(b_i(t)\)</span> and obtain more valid inference
+for our coefficient function.</li>
+</ol>
+<p>These steps are implemented below:</p>
+<pre class="r"><code>##########################################################################################
+## step 1
+mean_mod = mgcv::gam(percent_change ~ s(seconds, k=30, bs=&quot;cr&quot;) + 
+                          s(seconds, by=use, k=30, bs = &quot;cr&quot;), 
+                  data = pupil, method = &quot;REML&quot;)
+
+########################################################################################## 
+## step 2
+## Create a matrix of residuals
+
+resid_df = pupil %&gt;%
+  filter(!is.na(percent_change)) %&gt;%
+  select(id, seconds) %&gt;%
+  mutate(resid = mean_mod$residuals) %&gt;%
+  pivot_wider(names_from = seconds, values_from = resid, names_prefix = &quot;resid.&quot;)
+  
+resid_mat = as.matrix(resid_df[,-1])
+rownames(resid_mat) = resid_df$id
+
+fpca_results = fpca.face(resid_mat, argvals = unique(pupil$seconds), knots = 15)
+eigenfunctions &lt;- as.data.frame(fpca_results$efunctions)
+colnames(eigenfunctions) &lt;- paste0(&quot;Phi&quot;, seq(1, fpca_results$npc))
+eigenfunctions$seconds &lt;- unique(pupil$seconds)
+pupil = pupil %&gt;% left_join(., eigenfunctions, by = &quot;seconds&quot;) %&gt;%
+  as_tibble() %&gt;%
+  arrange(id, seconds) %&gt;%
+  mutate(id = factor(id))
+
+##########################################################################################
+# Step 3
+
+fosr_mod &lt;- mgcv::bam(percent_change ~ 
+                            s(seconds, k=30, bs=&quot;cr&quot;) + 
+                            s(seconds, by=use, k=30, bs = &quot;cr&quot;) + 
+                            s(id, by = Phi1, bs=&quot;re&quot;) + 
+                            s(id, by = Phi2, bs=&quot;re&quot;)+
+                            s(id, by = Phi3, bs=&quot;re&quot;) + 
+                            s(id, by = Phi4, bs=&quot;re&quot;), 
+                          method = &quot;fREML&quot;, data = pupil, discrete = TRUE)
+summary(fosr_mod)
+## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## percent_change ~ s(seconds, k = 30, bs = &quot;cr&quot;) + s(seconds, by = use, 
+##     k = 30, bs = &quot;cr&quot;) + s(id, by = Phi1, bs = &quot;re&quot;) + s(id, 
+##     by = Phi2, bs = &quot;re&quot;) + s(id, by = Phi3, bs = &quot;re&quot;) + s(id, 
+##     by = Phi4, bs = &quot;re&quot;)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -25.1007     0.8544  -29.38   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                   edf Ref.df        F p-value    
+## s(seconds)      28.57  28.90  272.106  &lt;2e-16 ***
+## s(seconds):use  11.54  14.17    9.762  &lt;2e-16 ***
+## s(id):Phi1     123.16 125.00 4321.616  &lt;2e-16 ***
+## s(id):Phi2     123.57 125.00  923.221  &lt;2e-16 ***
+## s(id):Phi3     123.52 125.00  467.269  &lt;2e-16 ***
+## s(id):Phi4     122.73 125.00  113.579  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.995   Deviance explained = 99.5%
+## fREML =  24304  Scale est. = 0.90382   n = 16500</code></pre>
+</div>
+</div>
+<div id="fofr" class="section level1">
+<h1>FoFR</h1>
+<p>Function-on-function regression is a class of models where the
+outcome is a function and the covariate(s) is/are also functions. There
+are different formulations of this model and which one you pick really
+depends on what your data looks like and what questions you’re trying to
+answer.</p>
+<p>The main models to consider are summarized below.</p>
+<div id="functional-linear-concurrent-model" class="section level2">
+<h2>Functional linear concurrent model</h2>
+<p>A functional linear concurrent model describes the relationship
+between a functional response and a functional predictor, where the
+effect of the predictor at each time point is modeled by a time-varying
+coefficient function, allowing the association to evolve dynamically
+over time. A functional linear concurrent model can be thought of as
+performing separate linear regressions at each time point <span
+class="math inline">\(t\)</span>, but with the added constraint that the
+regression coefficients vary smoothly over <span
+class="math inline">\(t\)</span>, ensuring temporal coherence in the
+estimated relationship between the functional predictor and
+response.</p>
+<p>This model is given by:</p>
+<p><span class="math display">\[Y_i(t) =   \beta_0(t) + \sum_{j}
+\beta_j(t)X_{ij}(t)  + b_i(t) +  \epsilon_i(t)\]</span></p>
+</div>
+<div id="historical-functional-model" class="section level2">
+<h2>Historical functional model</h2>
+<p>A historical functional model extends the functional linear
+concurrent model by allowing the response at time <span
+class="math inline">\(t\)</span> to depend not only on the predictor at
+<span class="math inline">\(t\)</span> but also on its past values.</p>
+<ul>
+<li>Useful for when function and covariate are observed on the same
+domain, and you don’t want the covariate measurements from the future to
+predict the response in the present.</li>
+</ul>
+<p><span class="math display">\[Y_i(t) =   \beta_0(t) + \sum_{j}\int_{s
+= 0}^t \beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)\]</span></p>
+</div>
+<div id="fofr-model" class="section level2">
+<h2>FoFR model</h2>
+<p>The functional outcome and functional covariate can (but don’t
+necessarily need to be) on the same domain. Allows the functional
+response <span class="math inline">\(Y(t)\)</span> to depend on the
+entire functional predictor(s).</p>
+<p><span class="math display">\[Y_i(t) =  \beta_0(t) + \sum_{j}\int_s
+\beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)\]</span></p>
+</div>
+</div>
+<div id="fpca" class="section level1">
+<h1>FPCA</h1>
+<p>Functional principle component analysis is a useful tool! And it’s
+super easy to implement in <code>refund()</code>. I would say this is
+probably what <code>refund</code> is most widely used for.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
