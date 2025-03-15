@@ -39,7 +39,7 @@ Note that we will use the `refund` package and `mgcv` to do functional data anal
 
 # Pupillometer data
 
-I will be using examples using curves of pupil response to a light stimulus. Some subjects smoke cannabis 60 minutes before the light stimulus and others did not.  The goal is to see whether the pupil response to light differs for those who used cannabis. You can download the data HERE.
+I will be using examples using curves of pupil response to a light stimulus. Some subjects smoke cannabis 60 minutes before the light stimulus and others did not.  The goal is to see whether the pupil response to light differs for those who used cannabis. You can download the data [here](Downloads/pupil.Rdata).
 
 ```{r}
 load(here::here("Downloads", "pupil.Rdata"))
