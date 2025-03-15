@@ -4,7 +4,6 @@ output:
   html_document: 
     toc: true
     toc_float: true
-    in_header: ga_script.html
 ---
 
 <link rel="stylesheet" href="academicons.css"/>
@@ -21,7 +20,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Overview
 
 
 This tutorial provides an introduction to key functional regression models. It is a work in progress and will likely be updated over time. Libraries used in this tutorial are loaded below.
