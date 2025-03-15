@@ -14,7 +14,7 @@ Below are links to my  tutorials.
 <br><img src="images/rladies_nba.png" alt="julia" style="width:75%"><br>
 
 
-* [Functional regression in R](http://juliawrobel.com/fda/)
+* [Functional regression in R](http://juliawrobel.com/fda.html)
   
 
 * [The Hitchhiker’s Guide to Reproducible Research](http://juliawrobel.com/reproducible_research/)
