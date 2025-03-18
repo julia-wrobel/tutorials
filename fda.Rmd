@@ -1,5 +1,5 @@
 ---
-title: "Functional data analysis in R"
+title: "Functional regression in R"
 output:
   html_document: 
     toc: true
@@ -28,11 +28,14 @@ This tutorial provides an introduction to key functional regression models. It i
 library(tidyverse)
 library(refund)
 library(mgcv)
+library(tictoc)
+library(vbvs.concurrent) # devtools::install_github("jeff-goldsmith/vbvs.concurrent")
+library(viridis)
 library(patchwork)
 ```
 
 
-Note that we will use the `refund` package and `mgcv` to do functional data analysis.
+Note that we will use the `refund` package, `vbvs.concurrent`, and `mgcv` to do functional data analysis.
 
 
 # Pupillometer data
@@ -154,12 +157,12 @@ plot(pfr_age)
 
 
 ```{r}
-pfr_use = pfr(use ~ lf(percent_change, k = 30, bs = "cr"),
+pfr_use = pfr(use ~ lf(percent_change, k = 30, bs = "cr") + age + alcohol,
               family = binomial,
               data = sofr_df)
 ```
 
-
+Below I show model summary and default plotting function.
 
 ```{r}
 summary(pfr_use)
@@ -168,19 +171,49 @@ plot(pfr_use)
 
 
 
+```{r, echo = FALSE, eval = FALSE}
+# You can also extract and plot the coefficient function and its 95% C.I. yourself:
+coef(pfr_use) %>%
+  rename(time = percent_change.argvals,
+         beta_hat = value) %>%
+  mutate(lower = beta_hat - 1.96 * se,
+         upper = beta_hat + 1.96 * se) %>%
+    ggplot(aes(time, beta_hat)) + 
+  geom_line() +
+  geom_line(aes(y = lower), linetype = 2, color = "blue") +
+  geom_line(aes(y = upper), linetype = 2, color = "blue") +
+  geom_hline(yintercept = 0, linetype = 3, color = "red") +
+  theme_minimal()
+```
+
+
 ## mgcv::gam()
 
 First we need to process the data a little bit differently- some of this is done under the hood in `pfr()`
 
 ```{r}
-  ncols = ncol(pupil_mat)
+ncols = ncol(pupil_mat)
 
-  sind = seq(0, 1, len = ncols)
-  smat = matrix(sind, nrow(sofr_df), ncols, byrow = TRUE)
+# vector, matrix containing functional domain of observed data (assumes everyone is on the same grid)
+sind = seq(0, 1, len = ncols)
+smat = matrix(sind, nrow(sofr_df), ncols, byrow = TRUE)
   
-  sofr_df$smat = I(smat)
-  sofr_df$lmat = I(matrix(1/ncols, nrow(sofr_df), ncols))
-  sofr_df$zlmat = I(sofr_df$lmat * sofr_df$percent_change)
+# construct quadrature weights for numeric integration  
+sofr_df$smat = I(smat)
+sofr_df$lmat = I(matrix(1/ncols, nrow(sofr_df), ncols))
+sofr_df$zlmat = I(sofr_df$lmat * sofr_df$percent_change)
+
+
+```
+
+
+```{r, eval = FALSE, echo = FALSE}
+# see FDA book page 131 for constructing quadrature weights when domain is not on 0, 1
+#s_vec = unique(pupil$seconds)
+#smat = matrix(s_vec, nrow(sofr_df), ncols, byrow = TRUE)
+
+# calculate vector quadrature weights using Simpson's rule 
+
 ```
 
 
@@ -189,6 +222,7 @@ gam_use = gam(use ~ s(smat, by=zlmat, bs = "cr", k = 30) + age + alcohol,
                    data= sofr_df,
                    method = "REML", family = binomial)
 ```
+
 
 
 ```{r}
@@ -200,6 +234,41 @@ plot(gam_use)
 
 ### Plotting in mgcv
 
+
+Here we show how to obtain pointwise confidence intervals for coefficient functions
+
+
+```{r}
+
+# put required data inputs into a dataframe
+# need to have same names as covariates in model
+s_pred = seq(0,1, length.out = 100)
+df_pred = data.frame(smat = s_pred, zlmat = 1, alcohol = 0, age = 0)
+
+# call predict.gam
+coef_est = predict(gam_use, newdata = df_pred, type = "terms", se.fit = TRUE)
+
+# extract point estimate and pointwise standard errors
+beta_hat = coef_est$fit[,3]
+se_beta_hat = coef_est$se.fit[,3]
+
+# construct lower and upper 95% confidence bounds
+lower = beta_hat - qnorm(0.975) * se_beta_hat
+upper = beta_hat + qnorm(0.975) * se_beta_hat
+```
+
+
+Plot the results- I am plotting $\beta(t)$ here but could also plot $e^{\beta(t)}$ to get the odds ratio.
+
+```{r}
+tibble(time = s_pred, beta_hat = beta_hat, lower = lower, upper = upper) %>%
+  ggplot(aes(time, beta_hat)) + 
+  geom_line() +
+  geom_line(aes(y = lower), linetype = 2, color = "blue") +
+  geom_line(aes(y = upper), linetype = 2, color = "blue") +
+  geom_hline(yintercept = 0, linetype = 3, color = "red") +
+  theme_minimal()
+```
 
 
 # FoSR
@@ -289,13 +358,53 @@ Function-on-function regression is a class of models where the outcome is a func
 
 The main models to consider are summarized below. 
 
-## Functional linear concurrent model
+## Important practical considerations
+
+
+FLCM: 
+
+- Spline estimates aren't penalized (I believe)
+- To get confidence intervals I would recommend the bootstrap
+- I'm not sure that you can include scalar predictors 
+
+FoFR and Functional historical model implemented in `refund::pffr()`
+
+* Can't have missing functional observations so need to impute or remove
+  * Code will break if you have missing data
+* There is a lot more you can do with `pffr` than I know how to do without digging into it.
+
+## Functional linear concurrent model (FLCM)
 
 A functional linear concurrent model describes the relationship between a functional response and a functional predictor, where the effect of the predictor at each time point is modeled by a time-varying coefficient function, allowing the association to evolve dynamically over time. A functional linear concurrent model can be thought of as performing separate linear regressions at each time point $t$, but with the added constraint that the regression coefficients vary smoothly over $t$, ensuring temporal coherence in the estimated relationship between the functional predictor and response.
 
 This model is given by: 
 
 $$Y_i(t) =   \beta_0(t) + \sum_{j} \beta_j(t)X_{ij}(t)  + b_i(t) +  \epsilon_i(t)$$
+
+
+
+### Code
+
+```{r}
+	flcm = vb_concurrent(percent_change ~ percent_change_baseline | seconds, 
+	                          id.var = "id",
+                            data = pupil, 
+	                          Kt = 20, # number of spline basis functions 
+	                          Kp = 10 # number of FPCs to estimate
+	                          )
+
+
+```
+
+Plotting the coefficient function.
+
+```{r}
+flcm$beta.pm %>%
+  ggplot(aes(seconds, percent_change_baseline)) +
+  geom_line()
+```
+
+
 
 ## Historical functional model
 
@@ -306,6 +415,86 @@ A historical functional model extends the functional linear concurrent model by 
 
 $$Y_i(t) =   \beta_0(t) + \sum_{j}\int_{s = 0}^t \beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)$$
 
+### Code
+
+For this and for the FoFR model, we will use the `pffr` function from the refund package.  First we have to rearrange the data to work with `pffr`.
+
+
+```{r}
+pupil_noMissing = pupil %>%
+  group_by(id) %>%
+  mutate(missing = sum(is.na(percent_change_baseline))+ sum(is.na(percent_change))) %>%
+  ungroup() %>%
+  filter(missing == 0)
+
+
+
+nsubj = length(unique(pupil_noMissing$id)) # number of subjects
+ntime = length(unique(pupil_noMissing$seconds)) # number of time points, assuming subjects are measured on the same grid
+	
+y_fofr = matrix(pupil_noMissing$percent_change, nrow = nsubj, ncol = ntime, byrow = TRUE)
+x_fofr = matrix(pupil_noMissing$percent_change_baseline, nrow = nsubj, ncol = ntime, byrow = TRUE)
+
+fofr_df = pupil_noMissing %>%
+  select(id, use, age) %>% distinct() %>% as.data.frame()
+
+
+fofr_df$y = y_fofr
+fofr_df$x = x_fofr
+
+t = s = unique(pupil$seconds)
+
+# need to either impute or remove missing values in the x
+fofr_df = fofr_df[complete.cases(fofr_df),]
+```
+
+
+Now we can do the modeling- I'm only going to model the use group to speed this up, but also because I believe the results are more interesting.
+
+```{r, cache = TRUE}
+
+fhist_mod = pffr(y ~ s(id, bs = "re") + ff(x, xind = s, limits = "s<t",
+		                                       splinepars = list(bs = "ps", 
+		                                                      k= c(5, 5))), 
+		             yind = t, filter(fofr_df, use == 1))
+
+
+
+```
+
+
+where
+
+- `s(seconds, bs = "re")`: subject specific random intercept $b_i(t)$
+-  ` k= c(15, 15)`: defines number of basis functions for the surface (default is 5, which is probably too few but I'm using that right now because it is faster)
+
+
+
+```{r}
+summary(fhist_mod)
+```
+
+
+Finally, do the plotting. Now we have estimated a coefficient surface instead of a coefficient function.
+
+
+
+```{r}
+# extract surface for plotting
+fhist_surf = coef(fhist_mod, n1 = 100, n2 = 100)$smterms$"ff(x,s)"$coef %>%
+  select(s = x.smat, t = x.tmat, value = value) %>% 
+  as_tibble() %>%
+  mutate(value = ifelse(s>t, NA, value))
+
+fhist_surf %>%
+  ggplot(aes(s, t)) + 
+  geom_tile(aes(fill = value, col = value)) + 
+  scale_fill_viridis_c() +
+  scale_colour_viridis_c() +
+  theme(legend.position = "bottom")
+```
+
+
 
 ## FoFR model
 
@@ -314,6 +503,45 @@ The functional outcome and functional covariate can (but don't necessarily need 
 
 $$Y_i(t) =  \beta_0(t) + \sum_{j}\int_s \beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)$$
 
-# FPCA
 
-Functional principle component analysis is a useful tool! And it's super easy to implement in `refund()`. I would say this is probably what `refund` is most widely used for.
+
+### Code
+
+This is very similar to the functional historical model, and I will use the same version of the data. For modeling, I'm also adding a scalar covariate (use) which could be added to the historical model as well. I'm also removing the functional random intercept so that it runs a bit faster, but would recommend keeping this in for modelling when you also want inference.
+
+```{r,  cache = TRUE}
+
+fofr_mod = pffr(y ~ ff(x, xind = s) + age, 
+		             yind = t, fofr_df)
+
+```
+
+
+Model summary
+
+
+```{r}
+summary(fofr_mod)
+```
+
+
+Plotting
+
+
+```{r}
+fofr_surf = coef(fofr_mod, n1 = 100, n2 = 100)$smterms$"ff(x,s)"$coef %>%
+  select(s = x.smat, t = x.tmat, value = value) %>% 
+  as_tibble() 
+
+fofr_surf %>%
+  ggplot(aes(s, t)) + 
+  geom_tile(aes(fill = value, col = value)) + 
+  scale_fill_viridis_c() +
+  scale_colour_viridis_c() +
+  theme(legend.position = "bottom")
+```
+
+# Resources
+
+- I highly recommend this [FDA with R book](https://www.amazon.com/Functional-Analysis-Monographs-Statistics-Probability/dp/1032244712/ref=sr_1_6?crid=UEKJYVS8EV6R&keywords=crainiceanu&qid=1698108861&sprefix=crainiceanu%2Caps%2C83&sr=8-6)
+

@@ -11,7 +11,7 @@
 
 
 
-<title>Functional data analysis in R</title>
+<title>Functional regression in R</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -368,7 +368,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Functional data analysis in R</h1>
+<h1 class="title toc-ignore">Functional regression in R</h1>
 
 </div>
 
@@ -400,9 +400,14 @@ library(mgcv)
 ##     collapse
 ## 
 ## This is mgcv 1.9-1. For overview type &#39;help(&quot;mgcv-package&quot;)&#39;.
+library(tictoc)
+library(vbvs.concurrent) # devtools::install_github(&quot;jeff-goldsmith/vbvs.concurrent&quot;)
+library(viridis)
+## Loading required package: viridisLite
 library(patchwork)</code></pre>
-<p>Note that we will use the <code>refund</code> package and
-<code>mgcv</code> to do functional data analysis.</p>
+<p>Note that we will use the <code>refund</code> package,
+<code>vbvs.concurrent</code>, and <code>mgcv</code> to do functional
+data analysis.</p>
 <div id="pupillometer-data" class="section level1">
 <h1>Pupillometer data</h1>
 <p>I will be using examples using curves of pupil response to a light
@@ -760,8 +765,29 @@ are different formulations of this model and which one you pick really
 depends on what your data looks like and what questions you’re trying to
 answer.</p>
 <p>The main models to consider are summarized below.</p>
-<div id="functional-linear-concurrent-model" class="section level2">
-<h2>Functional linear concurrent model</h2>
+<div id="important-practical-considerations-2" class="section level2">
+<h2>Important practical considerations</h2>
+<p>FLCM:</p>
+<ul>
+<li>Spline estimates aren’t penalized (I believe)</li>
+<li>To get confidence intervals I would recommend the bootstrap</li>
+<li>I’m not sure that you can include scalar predictors</li>
+</ul>
+<p>FoFR and Functional historical model implemented in
+<code>refund::pffr()</code></p>
+<ul>
+<li>Can’t have missing functional observations so need to impute or
+remove
+<ul>
+<li>Code will break if you have missing data</li>
+</ul></li>
+<li>There is a lot more you can do with <code>pffr</code> than I know
+how to do without digging into it.</li>
+</ul>
+</div>
+<div id="functional-linear-concurrent-model-flcm"
+class="section level2">
+<h2>Functional linear concurrent model (FLCM)</h2>
 <p>A functional linear concurrent model describes the relationship
 between a functional response and a functional predictor, where the
 effect of the predictor at each time point is modeled by a time-varying
@@ -776,6 +802,40 @@ response.</p>
 <p>This model is given by:</p>
 <p><span class="math display">\[Y_i(t) =   \beta_0(t) + \sum_{j}
 \beta_j(t)X_{ij}(t)  + b_i(t) +  \epsilon_i(t)\]</span></p>
+<div id="code" class="section level3">
+<h3>Code</h3>
+<pre class="r"><code>    flcm = vb_concurrent(percent_change ~ percent_change_baseline | seconds, 
+                              id.var = &quot;id&quot;,
+                            data = pupil, 
+                              Kt = 20, # number of spline basis functions 
+                              Kp = 10 # number of FPCs to estimate
+                              )
+## Standardizing Variables 
+## ..
+## Constructing Xstar; doing data organization 
+## Beginning Algorithm 
+## ..........
+## Warning: `arrange_()` was deprecated in dplyr 0.7.0.
+## ℹ Please use `arrange()` instead.
+## ℹ See vignette(&#39;programming&#39;) for more help
+## ℹ The deprecated feature was likely used in the vbvs.concurrent package.
+##   Please report the issue to the authors.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+## Warning: `rename_()` was deprecated in dplyr 0.7.0.
+## ℹ Please use `rename()` instead.
+## ℹ The deprecated feature was likely used in the vbvs.concurrent package.
+##   Please report the issue to the authors.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<p>Plotting the coefficient function.</p>
+<pre class="r"><code>flcm$beta.pm %&gt;%
+  ggplot(aes(seconds, percent_change_baseline)) +
+  geom_line()</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
+</div>
 </div>
 <div id="historical-functional-model" class="section level2">
 <h2>Historical functional model</h2>
@@ -790,6 +850,100 @@ predict the response in the present.</li>
 </ul>
 <p><span class="math display">\[Y_i(t) =   \beta_0(t) + \sum_{j}\int_{s
 = 0}^t \beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)\]</span></p>
+<div id="code-1" class="section level3">
+<h3>Code</h3>
+<p>For this and for the FoFR model, we will use the <code>pffr</code>
+function from the refund package. First we have to rearrange the data to
+work with <code>pffr</code>.</p>
+<pre class="r"><code>pupil_noMissing = pupil %&gt;%
+  group_by(id) %&gt;%
+  mutate(missing = sum(is.na(percent_change_baseline))+ sum(is.na(percent_change))) %&gt;%
+  ungroup() %&gt;%
+  filter(missing == 0)
+
+
+
+nsubj = length(unique(pupil_noMissing$id)) # number of subjects
+ntime = length(unique(pupil_noMissing$seconds)) # number of time points, assuming subjects are measured on the same grid
+    
+y_fofr = matrix(pupil_noMissing$percent_change, nrow = nsubj, ncol = ntime, byrow = TRUE)
+x_fofr = matrix(pupil_noMissing$percent_change_baseline, nrow = nsubj, ncol = ntime, byrow = TRUE)
+
+fofr_df = pupil_noMissing %&gt;%
+  select(id, use, age) %&gt;% distinct() %&gt;% as.data.frame()
+
+
+fofr_df$y = y_fofr
+fofr_df$x = x_fofr
+
+t = s = unique(pupil$seconds)
+
+# need to either impute or remove missing values in the x
+fofr_df = fofr_df[complete.cases(fofr_df),]</code></pre>
+<p>Now we can do the modeling- I’m only going to model the use group to
+speed this up, but also because I believe the results are more
+interesting.</p>
+<pre class="r"><code>
+fhist_mod = pffr(y ~ s(id, bs = &quot;re&quot;) + ff(x, xind = s, limits = &quot;s&lt;t&quot;,
+                                               splinepars = list(bs = &quot;ps&quot;, 
+                                                              k= c(5, 5))), 
+                     yind = t, filter(fofr_df, use == 1))
+## &lt;limits&gt;-argument detected. Changing to Riemann sums for numerical integration.
+## Warning in ff(x, xind = s, limits = &quot;s&lt;t&quot;, splinepars = list(bs = &quot;ps&quot;, : Very
+## low effective rank of &lt;x&gt; detected. 3 largest eigenvalues of its covariance
+## alone account for &gt;99.5% of variability. &lt;ffpc&gt; might be a better choice here.
+## Warning in ff(x, xind = s, limits = &quot;s&lt;t&quot;, splinepars = list(bs = &quot;ps&quot;, : &lt;k&gt;
+## larger than effective rank of &lt;x&gt;. Model identifiable only through penalty.</code></pre>
+<p>where</p>
+<ul>
+<li><code>s(seconds, bs = "re")</code>: subject specific random
+intercept <span class="math inline">\(b_i(t)\)</span></li>
+<li><code>k= c(15, 15)</code>: defines number of basis functions for the
+surface (default is 5, which is probably too few but I’m using that
+right now because it is faster)</li>
+</ul>
+<pre class="r"><code>summary(fhist_mod)
+## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## y ~ s(id, bs = &quot;re&quot;) + ff(x, xind = s, limits = &quot;s&lt;t&quot;, splinepars = list(bs = &quot;ps&quot;, 
+##     k = c(5, 5)))
+## 
+## Constant coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -29.934      1.868  -16.03   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Smooth terms &amp; functional coefficients:
+##                 edf Ref.df     F p-value    
+## Intercept(t)  18.51  19.00 327.4  &lt;2e-16 ***
+## s(id)        446.16 457.00 444.8  &lt;2e-16 ***
+## ff(x,s)       21.06  21.61 111.1  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.992   Deviance explained = 99.2%
+## -REML score =  20494  Scale est. = 1.3308    n = 12144 (92 x 132)</code></pre>
+<p>Finally, do the plotting. Now we have estimated a coefficient surface
+instead of a coefficient function.</p>
+<pre class="r"><code># extract surface for plotting
+fhist_surf = coef(fhist_mod, n1 = 100, n2 = 100)$smterms$&quot;ff(x,s)&quot;$coef %&gt;%
+  select(s = x.smat, t = x.tmat, value = value) %&gt;% 
+  as_tibble() %&gt;%
+  mutate(value = ifelse(s&gt;t, NA, value))
+## using seWithMean for  s(t.vec) .
+
+fhist_surf %&gt;%
+  ggplot(aes(s, t)) + 
+  geom_tile(aes(fill = value, col = value)) + 
+  scale_fill_viridis_c() +
+  scale_colour_viridis_c() +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+</div>
 </div>
 <div id="fofr-model" class="section level2">
 <h2>FoFR model</h2>
@@ -799,13 +953,62 @@ response <span class="math inline">\(Y(t)\)</span> to depend on the
 entire functional predictor(s).</p>
 <p><span class="math display">\[Y_i(t) =  \beta_0(t) + \sum_{j}\int_s
 \beta_j(t, s)X_{ij}(s)ds  + b_i(t) +  \epsilon_i(t)\]</span></p>
+<div id="code-2" class="section level3">
+<h3>Code</h3>
+<p>This is very similar to the functional historical model, and I will
+use the same version of the data. For modeling, I’m also adding a scalar
+covariate (use) which could be added to the historical model as well.
+I’m also removing the functional random intercept so that it runs a bit
+faster, but would recommend keeping this in for modelling when you also
+want inference.</p>
+<pre class="r"><code>
+fofr_mod = pffr(y ~ ff(x, xind = s) + age, 
+                     yind = t, fofr_df)
+## Warning in ff(x, xind = s): Very low effective rank of &lt;x&gt; detected. 3 largest
+## eigenvalues of its covariance alone account for &gt;99.5% of variability. &lt;ffpc&gt;
+## might be a better choice here.
+## Warning in ff(x, xind = s): &lt;k&gt; larger than effective rank of &lt;x&gt;. Model
+## identifiable only through penalty.</code></pre>
+<p>Model summary</p>
+<pre class="r"><code>summary(fofr_mod)
+## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## y ~ ff(x, xind = s) + age
+## 
+## Constant coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -7.4258     0.4346  -17.09   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Smooth terms &amp; functional coefficients:
+##                 edf Ref.df      F  p-value    
+## Intercept(t) 17.553 19.000 634.54  &lt; 2e-16 ***
+## ff(x,s)      21.796 23.033 294.22  &lt; 2e-16 ***
+## age(t)        2.559  2.911  12.08 5.36e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.838   Deviance explained = 83.8%
+## -REML score =  49866  Scale est. = 29.701    n = 15972 (121 x 132)</code></pre>
+<p>Plotting</p>
+<pre class="r"><code>fofr_surf = coef(fofr_mod, n1 = 100, n2 = 100)$smterms$&quot;ff(x,s)&quot;$coef %&gt;%
+  select(s = x.smat, t = x.tmat, value = value) %&gt;% 
+  as_tibble() 
+## using seWithMean for  s(t.vec) .
+
+fofr_surf %&gt;%
+  ggplot(aes(s, t)) + 
+  geom_tile(aes(fill = value, col = value)) + 
+  scale_fill_viridis_c() +
+  scale_colour_viridis_c() +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
 </div>
 </div>
-<div id="fpca" class="section level1">
-<h1>FPCA</h1>
-<p>Functional principle component analysis is a useful tool! And it’s
-super easy to implement in <code>refund()</code>. I would say this is
-probably what <code>refund</code> is most widely used for.</p>
 </div>
 
 
