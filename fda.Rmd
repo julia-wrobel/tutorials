@@ -253,8 +253,8 @@ beta_hat = coef_est$fit[,3]
 se_beta_hat = coef_est$se.fit[,3]
 
 # construct lower and upper 95% confidence bounds
-lower = beta_hat - qnorm(0.975) * se_beta_hat
-upper = beta_hat + qnorm(0.975) * se_beta_hat
+lower = beta_hat - 1.96 * se_beta_hat
+upper = beta_hat + 1.96 * se_beta_hat
 ```
 
 
@@ -290,6 +290,7 @@ where:
 
 * Need to dummy code categorical variables (1 vs. 0 for binary, for example)
 * Subject id variable should be a factor
+* Pointwise confidence intervals are technically subject to multiple comparisons issues
 
 
 
@@ -347,6 +348,38 @@ fosr_mod <- mgcv::bam(percent_change ~
                             s(id, by = Phi4, bs="re"), 
                           method = "fREML", data = pupil, discrete = TRUE)
 summary(fosr_mod)
+
+```
+
+
+## Plotting
+
+Here we will plot results much the same way we did when plotting results for SoFR 
+
+```{r}
+# put required data inputs into a dataframe
+# need to have same names as covariates in model
+s_pred = seq(0,1, length.out = 100)
+df_pred = pupil %>%
+  filter(id == first(id))
+
+# call predict.gam
+coef_est = predict(fosr_mod, newdata = df_pred, type = "terms", se.fit = TRUE)
+
+
+
+tibble(beta1 =  coef_est$fit[, 2],
+       seconds = df_pred$seconds,
+       se_beta1 = coef_est$se.fit[,2],
+       lower = beta1 - 1.96 * se_beta1,
+       upper = beta1 + 1.96 * se_beta1) %>%
+    ggplot(aes(seconds, beta1)) + 
+  geom_line() +
+  geom_line(aes(y = lower), linetype = 2, color = "blue") +
+  geom_line(aes(y = upper), linetype = 2, color = "blue") +
+  geom_hline(yintercept = 0, linetype = 3, color = "red") +
+  theme_minimal()
+
 
 ```
 
@@ -544,4 +577,13 @@ fofr_surf %>%
 # Resources
 
 - I highly recommend this [FDA with R book](https://www.amazon.com/Functional-Analysis-Monographs-Statistics-Probability/dp/1032244712/ref=sr_1_6?crid=UEKJYVS8EV6R&keywords=crainiceanu&qid=1698108861&sprefix=crainiceanu%2Caps%2C83&sr=8-6)
+
+
+Some papers about models covered in this tutorial:
+- [Functional data analysis with pupillometer data](https://karger.com/dib/article/8/1/83/906653)
+- [SoFR](https://pmc.ncbi.nlm.nih.gov/articles/PMC3285536/)
+- [Functional linear concurrent model](https://pmc.ncbi.nlm.nih.gov/articles/PMC5457356/)
+- [FoFR](https://pmc.ncbi.nlm.nih.gov/articles/PMC4560367/pdf/nihms-589200.pdf)
+
+
 

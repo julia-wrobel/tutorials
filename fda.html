@@ -566,9 +566,10 @@ sofr_df$percent_change = pupil_mat</code></pre>
 
 plot(pfr_age)</code></pre>
 <p><img src="fda_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
-<pre class="r"><code>pfr_use = pfr(use ~ lf(percent_change, k = 30, bs = &quot;cr&quot;),
+<pre class="r"><code>pfr_use = pfr(use ~ lf(percent_change, k = 30, bs = &quot;cr&quot;) + age + alcohol,
               family = binomial,
               data = sofr_df)</code></pre>
+<p>Below I show model summary and default plotting function.</p>
 <pre class="r"><code>summary(pfr_use)
 ## 
 ## Family: binomial 
@@ -576,22 +577,24 @@ plot(pfr_age)</code></pre>
 ## 
 ## Formula:
 ## use ~ s(x = percent_change.tmat, by = L.percent_change, k = 30, 
-##     bs = &quot;cr&quot;)
+##     bs = &quot;cr&quot;) + age + alcohol
 ## 
 ## Parametric coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)    7.151      1.823   3.922 8.79e-05 ***
+## (Intercept)  8.40930    2.37732   3.537 0.000404 ***
+## age         -0.04372    0.03687  -1.186 0.235691    
+## alcohol      0.08186    0.07870   1.040 0.298251    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Approximate significance of smooth terms:
-##                                          edf Ref.df Chi.sq p-value   
-## s(percent_change.tmat):L.percent_change 2.91  3.251  14.67 0.00284 **
+##                                           edf Ref.df Chi.sq p-value   
+## s(percent_change.tmat):L.percent_change 2.843   3.17  13.93 0.00363 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## R-sq.(adj) =  0.149   Deviance explained = 16.1%
-## -REML = 59.003  Scale est. = 1         n = 125
+## R-sq.(adj) =  0.169   Deviance explained = 18.1%
+## -REML = 61.511  Scale est. = 1         n = 125
 plot(pfr_use)</code></pre>
 <p><img src="fda_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
 </div>
@@ -599,14 +602,17 @@ plot(pfr_use)</code></pre>
 <h2>mgcv::gam()</h2>
 <p>First we need to process the data a little bit differently- some of
 this is done under the hood in <code>pfr()</code></p>
-<pre class="r"><code>  ncols = ncol(pupil_mat)
+<pre class="r"><code>ncols = ncol(pupil_mat)
 
-  sind = seq(0, 1, len = ncols)
-  smat = matrix(sind, nrow(sofr_df), ncols, byrow = TRUE)
+# vector, matrix containing functional domain of observed data (assumes everyone is on the same grid)
+sind = seq(0, 1, len = ncols)
+smat = matrix(sind, nrow(sofr_df), ncols, byrow = TRUE)
   
-  sofr_df$smat = I(smat)
-  sofr_df$lmat = I(matrix(1/ncols, nrow(sofr_df), ncols))
-  sofr_df$zlmat = I(sofr_df$lmat * sofr_df$percent_change)</code></pre>
+# construct quadrature weights for numeric integration  
+sofr_df$smat = I(smat)
+sofr_df$lmat = I(matrix(1/ncols, nrow(sofr_df), ncols))
+sofr_df$zlmat = I(sofr_df$lmat * sofr_df$percent_change)
+</code></pre>
 <pre class="r"><code>gam_use = gam(use ~ s(smat, by=zlmat, bs = &quot;cr&quot;, k = 30) + age + alcohol, 
                    data= sofr_df,
                    method = &quot;REML&quot;, family = binomial)</code></pre>
@@ -635,9 +641,38 @@ this is done under the hood in <code>pfr()</code></p>
 ## R-sq.(adj) =  0.169   Deviance explained =   18%
 ## -REML = 61.547  Scale est. = 1         n = 125
 plot(gam_use)</code></pre>
-<p><img src="fda_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<p><img src="fda_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
 <div id="plotting-in-mgcv" class="section level3">
 <h3>Plotting in mgcv</h3>
+<p>Here we show how to obtain pointwise confidence intervals for
+coefficient functions</p>
+<pre class="r"><code>
+# put required data inputs into a dataframe
+# need to have same names as covariates in model
+s_pred = seq(0,1, length.out = 100)
+df_pred = data.frame(smat = s_pred, zlmat = 1, alcohol = 0, age = 0)
+
+# call predict.gam
+coef_est = predict(gam_use, newdata = df_pred, type = &quot;terms&quot;, se.fit = TRUE)
+
+# extract point estimate and pointwise standard errors
+beta_hat = coef_est$fit[,3]
+se_beta_hat = coef_est$se.fit[,3]
+
+# construct lower and upper 95% confidence bounds
+lower = beta_hat - qnorm(0.975) * se_beta_hat
+upper = beta_hat + qnorm(0.975) * se_beta_hat</code></pre>
+<p>Plot the results- I am plotting <span
+class="math inline">\(\beta(t)\)</span> here but could also plot <span
+class="math inline">\(e^{\beta(t)}\)</span> to get the odds ratio.</p>
+<pre class="r"><code>tibble(time = s_pred, beta_hat = beta_hat, lower = lower, upper = upper) %&gt;%
+  ggplot(aes(time, beta_hat)) + 
+  geom_line() +
+  geom_line(aes(y = lower), linetype = 2, color = &quot;blue&quot;) +
+  geom_line(aes(y = upper), linetype = 2, color = &quot;blue&quot;) +
+  geom_hline(yintercept = 0, linetype = 3, color = &quot;red&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="fda_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
 </div>
 </div>
 </div>
@@ -834,7 +869,7 @@ response.</p>
 <pre class="r"><code>flcm$beta.pm %&gt;%
   ggplot(aes(seconds, percent_change_baseline)) +
   geom_line()</code></pre>
-<p><img src="fda_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
+<p><img src="fda_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
 </div>
 </div>
 <div id="historical-functional-model" class="section level2">
@@ -942,7 +977,7 @@ fhist_surf %&gt;%
   scale_fill_viridis_c() +
   scale_colour_viridis_c() +
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="fda_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<p><img src="fda_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
 </div>
 </div>
 <div id="fofr-model" class="section level2">
@@ -1006,9 +1041,17 @@ fofr_surf %&gt;%
   scale_fill_viridis_c() +
   scale_colour_viridis_c() +
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="fda_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
+<p><img src="fda_files/figure-html/unnamed-chunk-26-1.png" width="90%" /></p>
 </div>
 </div>
+</div>
+<div id="resources" class="section level1">
+<h1>Resources</h1>
+<ul>
+<li>I highly recommend this <a
+href="https://www.amazon.com/Functional-Analysis-Monographs-Statistics-Probability/dp/1032244712/ref=sr_1_6?crid=UEKJYVS8EV6R&amp;keywords=crainiceanu&amp;qid=1698108861&amp;sprefix=crainiceanu%2Caps%2C83&amp;sr=8-6">FDA
+with R book</a></li>
+</ul>
 </div>
 
 
