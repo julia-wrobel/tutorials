@@ -28,6 +28,7 @@ Below are links to my  tutorials.
   * 04/06/2023, University of Michigan Department of Biostatistics
 
 * [Introduction to Shiny with NBA data](shiny_tutorial_nba.html): 
+    * Updated 04/17/2025 for the Emory course DATA555: Current topics in data science
     * 05/08/2018, For [R Ladies NYC](http://www.rladiesnyc.org/) at NBA's New York office
 
 
