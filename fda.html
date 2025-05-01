@@ -322,13 +322,13 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="http://juliawrobel.com/research.html">Research</a>
+  <a href="https://julia-wrobel.github.io/research.html">Research</a>
 </li>
 <li>
-  <a href="http://juliawrobel.com/papers.html">Papers</a>
+  <a href="https://julia-wrobel.github.io/papers.html">Papers</a>
 </li>
 <li>
-  <a href="http://juliawrobel.com/software.html">Software</a>
+  <a href="https://julia-wrobel.github.io/software.html">Software</a>
 </li>
 <li>
   <a href="tutorials.html">Tutorials</a>
@@ -336,13 +336,13 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="mailto:&lt;jw3134@cumc.columbia.edu&gt;">
+  <a href="mailto:&lt;julia.wrobel@emory.edu&gt;">
     <span class="fa fa-envelope fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="http://juliawrobel.com/Downloads/wrobel_cv.pdf">
+  <a href="https://julia-wrobel.github.io/Downloads/wrobel_cv.pdf">
     <span class="ai ai-cv ai-lg"></span>
      
   </a>
@@ -379,13 +379,13 @@ div.tocify {
 models. It is a work in progress and will likely be updated over time.
 Libraries used in this tutorial are loaded below.</p>
 <pre class="r"><code>library(tidyverse)
-## ── Attaching core tidyverse packages
+## ── Attaching core tidyverse pa
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ ggplot2   3.5.2     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ## ✔ purrr     1.0.4     
-## ── Conflicts ───────────────────────
+## ── Conflicts ─────────────────
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
@@ -469,24 +469,26 @@ post = pupil %&gt;%
   theme(legend.position = &quot;bottom&quot;) 
   
 baseline + post
-## `geom_smooth()` using method =
-## &#39;gam&#39; and formula = &#39;y ~ s(x, bs =
-## &quot;cs&quot;)&#39;
+## `geom_smooth()` using method
+## = &#39;gam&#39; and formula = &#39;y ~
+## s(x, bs = &quot;cs&quot;)&#39;
 ## Warning: Removed 546 rows containing
-## non-finite outside the scale range
-## (`stat_smooth()`).
-## Warning: Removed 528 rows containing missing
-## values or values outside the scale
-## range (`geom_line()`).
-## `geom_smooth()` using method =
-## &#39;gam&#39; and formula = &#39;y ~ s(x, bs =
-## &quot;cs&quot;)&#39;
+## non-finite outside the scale
+## range (`stat_smooth()`).
+## Warning: Removed 528 rows containing
+## missing values or values
+## outside the scale range
+## (`geom_line()`).
+## `geom_smooth()` using method
+## = &#39;gam&#39; and formula = &#39;y ~
+## s(x, bs = &quot;cs&quot;)&#39;
 ## Warning: Removed 289 rows containing
-## non-finite outside the scale range
-## (`stat_smooth()`).
-## Warning: Removed 264 rows containing missing
-## values or values outside the scale
-## range (`geom_line()`).</code></pre>
+## non-finite outside the scale
+## range (`stat_smooth()`).
+## Warning: Removed 264 rows containing
+## missing values or values
+## outside the scale range
+## (`geom_line()`).</code></pre>
 <p><img src="fda_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
 </div>
 <div id="sofr" class="section level1">
@@ -888,32 +890,34 @@ response.</p>
 ## Constructing Xstar; doing data organization 
 ## Beginning Algorithm 
 ## ..........
-## Warning: `arrange_()` was deprecated in
-## dplyr 0.7.0.
-## ℹ Please use `arrange()` instead.
-## ℹ See vignette(&#39;programming&#39;) for
-##   more help
-## ℹ The deprecated feature was likely
-##   used in the vbvs.concurrent
-##   package.
-##   Please report the issue to the
-##   authors.
-## This warning is displayed once
-## every 8 hours.
+## Warning: `arrange_()` was deprecated
+## in dplyr 0.7.0.
+## ℹ Please use `arrange()`
+##   instead.
+## ℹ See vignette(&#39;programming&#39;)
+##   for more help
+## ℹ The deprecated feature was
+##   likely used in the
+##   vbvs.concurrent package.
+##   Please report the issue to
+##   the authors.
+## This warning is displayed
+## once every 8 hours.
 ## Call
 ## `lifecycle::last_lifecycle_warnings()`
 ## to see where this warning was
 ## generated.
-## Warning: `rename_()` was deprecated in dplyr
-## 0.7.0.
-## ℹ Please use `rename()` instead.
-## ℹ The deprecated feature was likely
-##   used in the vbvs.concurrent
-##   package.
-##   Please report the issue to the
-##   authors.
-## This warning is displayed once
-## every 8 hours.
+## Warning: `rename_()` was deprecated in
+## dplyr 0.7.0.
+## ℹ Please use `rename()`
+##   instead.
+## ℹ The deprecated feature was
+##   likely used in the
+##   vbvs.concurrent package.
+##   Please report the issue to
+##   the authors.
+## This warning is displayed
+## once every 8 hours.
 ## Call
 ## `lifecycle::last_lifecycle_warnings()`
 ## to see where this warning was

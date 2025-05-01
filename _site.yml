@@ -4,19 +4,19 @@ navbar:
   title: Home
   left:
   - text: Research
-    href: http://juliawrobel.com/research.html
+    href: https://julia-wrobel.github.io/research.html
   - text: Papers
-    href: http://juliawrobel.com/papers.html
+    href: https://julia-wrobel.github.io/papers.html
   - text: Software
-    href: http://juliawrobel.com/software.html
+    href: https://julia-wrobel.github.io/software.html
   - text: Tutorials
     href: tutorials.html
     
   right:
   - icon: fa-envelope fa-lg
-    href: mailto:<jw3134@cumc.columbia.edu>
+    href: mailto:<julia.wrobel@emory.edu>
   - icon: ai-cv ai-lg
-    href: http://juliawrobel.com/Downloads/wrobel_cv.pdf
+    href: https://julia-wrobel.github.io/Downloads/wrobel_cv.pdf
   - icon: ai-google-scholar-square ai-lg
     href: https://scholar.google.com/citations?user=QI8GrFUAAAAJ&hl=en&oi=ao
   - icon: fa-github fa-lg

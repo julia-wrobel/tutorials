@@ -17,14 +17,14 @@ Below are links to my  tutorials.
 * [Functional regression in R](fda.html)
   
 
-* [The Hitchhiker’s Guide to Reproducible Research](http://juliawrobel.com/reproducible_research/)
+* [The Hitchhiker’s Guide to Reproducible Research](https://julia-wrobel.github.io/reproducible_research/)
   * July 22-24, 2024, [SISMID](https://sph.emory.edu/SISMID/index.html), co-taught with David Benkeser
 
 
-* [A single-cell spatial proteomics and multiplex imaging data workshop](http://juliawrobel.com/PSB_scProteomics/)
+* [A single-cell spatial proteomics and multiplex imaging data workshop](https://julia-wrobel.github.io/PSB_scProteomics/)
   * 01/03/2024, Pacific Symposium on Biocomputing
   
-* [A short course on Analysis of Multiplex Single-Cell Imaging Data in R](http://juliawrobel.com/MI_tutorial/)
+* [A short course on Analysis of Multiplex Single-Cell Imaging Data in R](https://julia-wrobel.github.io/MI_tutorial/)
   * 04/06/2023, University of Michigan Department of Biostatistics
 
 * [Introduction to Shiny with NBA data](shiny_tutorial_nba.html): 
