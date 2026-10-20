@@ -97,19 +97,19 @@ baseline + post
 
 For scalar-on-function regression with a Gaussian outcome the model we are interested in is 
 
-$$Y_i = \beta_0 + \sum_j \beta_jX_{ij} + \sum_k\int_t \mathcal{B}_k(t)Z_{ik}(t)dt + \epsilon_i,$$
+$$Y_i = \beta_0 + \sum_j \beta_jX_{ij} + \sum_k\int_t \gamma_k(t)Z_{ik}(t)dt + \epsilon_i,$$
 where:
 
 - $Y_i$ is a scalar outcome
 - Each $X_{ij}$ is a scalar covariate
 - Each $\beta_j$ is a regression coefficient for a scalar covariate
 - Each $Z_{ik}(t)$ is a functional covariate
-- Each $\mathcal{B}_k(t)$ is a *coefficient function*, a regression coefficient for a functional covariate
+- Each $\gamma_k(t)$ is a *coefficient function*, a regression coefficient for a functional covariate
 - $\epsilon_i$ are normally distributed iid errors
 
 The GLM version of this model (for non-Gaussian outcomes, usually binary) is:
 
-$$g(E[Y_i|X_i, Z_i]) = \beta_0 + \sum_j \beta_jX_{ij} + \sum_k\int_t \mathcal{B}_k(t)Z_{ik}(t)dt,$$
+$$g(E[Y_i|X_i, Z_i]) = \beta_0 + \sum_j \beta_jX_{ij} + \sum_k\int_t \gamma_k(t)Z_{ik}(t)dt,$$
 where $g(\cdot)$ is a known link function (think logit in the case of logistic regression, for example.)
 
 
@@ -258,7 +258,7 @@ upper = beta_hat + 1.96 * se_beta_hat
 ```
 
 
-Plot the results- I am plotting $\beta(t)$ here but could also plot $e^{\beta(t)}$ to get the odds ratio.
+Plot the results- I am plotting $\gamma(t)$ here but could also plot $e^{\gamma(t)}$ to get the odds ratio.
 
 ```{r}
 tibble(time = s_pred, beta_hat = beta_hat, lower = lower, upper = upper) %>%
@@ -419,14 +419,12 @@ $$Y_i(t) =   \beta_0(t) + \sum_{j} \beta_j(t)X_{ij}(t)  + b_i(t) +  \epsilon_i(t
 ### Code
 
 ```{r}
-	flcm = vb_concurrent(percent_change ~ percent_change_baseline | seconds, 
-	                          id.var = "id",
-                            data = pupil, 
-	                          Kt = 20, # number of spline basis functions 
-	                          Kp = 10 # number of FPCs to estimate
-	                          )
-
-
+flcm = vb_concurrent(percent_change ~ percent_change_baseline | seconds,
+                     id.var = "id",
+                     data = pupil,
+                     Kt = 20, # number of spline basis functions
+                     Kp = 10 # number of FPCs to estimate
+                     )
 ```
 
 Plotting the coefficient function.
@@ -436,8 +434,6 @@ flcm$beta.pm %>%
   ggplot(aes(seconds, percent_change_baseline)) +
   geom_line()
 ```
-
-
 
 ## Historical functional model
 
